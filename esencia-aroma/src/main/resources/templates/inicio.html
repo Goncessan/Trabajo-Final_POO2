@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Panel principal</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+
+    <div class="logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+
+    <input type="search"
+           class="busqueda"
+           placeholder="Buscar productos, clientes...">
+
+    <div class="accesos">
+        <span>Administración</span>
+    </div>
+
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}" class="activo">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+
+        <div class="menu-inferior">
+
+            <form th:action="@{/logout}"
+                  method="post"
+                  class="form-cerrar-sesion">
+
+                <button type="submit"
+                        class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+
+            </form>
+
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+
+        </div>
+
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <div>
+                <h1>Bienvenida a Esencia &amp; Aroma</h1>
+
+                <p>
+                    Administra tu negocio y mantén toda
+                    la información organizada.
+                </p>
+            </div>
+
+        </section>
+
+        <section class="resumen">
+
+            <h2>Resumen del negocio</h2>
+
+            <div class="tarjetas-resumen">
+
+                <article class="tarjeta">
+                    <p>Productos registrados</p>
+                    <h3>--</h3>
+                    <span>Inventario general</span>
+                </article>
+
+                <article class="tarjeta">
+                    <p>Pedidos pendientes</p>
+                    <h3>--</h3>
+                    <span>Abastecimiento</span>
+                </article>
+
+                <article class="tarjeta">
+                    <p>Ventas del mes</p>
+                    <h3>--</h3>
+                    <span>Actividad comercial</span>
+                </article>
+
+                <article class="tarjeta">
+                    <p>Por cobrar</p>
+                    <h3>--</h3>
+                    <span>Cuentas pendientes</span>
+                </article>
+
+            </div>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <h2>Gestión del negocio</h2>
+
+            <p class="descripcion">
+                Accede a los principales módulos del sistema.
+            </p>
+
+            <div class="tarjetas-modulos">
+
+                <article class="modulo">
+
+                    <h3>Productos e Inventario</h3>
+
+                    <p>
+                        Registra productos, consulta existencias
+                        y controla los movimientos del inventario.
+                    </p>
+
+                    <a th:href="@{/inventario}">
+                        Gestionar inventario →
+                    </a>
+
+                </article>
+
+                <article class="modulo">
+
+                    <h3>Abastecimiento y Pedidos</h3>
+
+                    <p>
+                        Organiza compras por campaña,
+                        pedidos especiales y recepción de productos.
+                    </p>
+
+                    <a th:href="@{/abastecimiento}">
+                        Gestionar pedidos →
+                    </a>
+
+                </article>
+
+                <article class="modulo">
+
+                    <h3>Clientes y Ventas</h3>
+
+                    <p>
+                        Administra clientes y registra
+                        ventas al contado y al crédito.
+                    </p>
+
+                    <a th:href="@{/ventas}">
+                        Gestionar ventas →
+                    </a>
+
+                </article>
+
+                <article class="modulo">
+
+                    <h3>Cobranzas y Reportes</h3>
+
+                    <p>
+                        Controla abonos, saldos pendientes
+                        y consulta información comercial.
+                    </p>
+
+                    <a th:href="@{/cobranzas}">
+                        Consultar cobranzas →
+                    </a>
+
+                </article>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026 -
+    Sistema de Gestión Comercial
+</footer>
+
+</body>
+</html>

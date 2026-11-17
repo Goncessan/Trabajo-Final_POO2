@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Gestión</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+
+    <div class="logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+
+    <div class="accesos">
+        <span>Administración</span>
+    </div>
+
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+
+        <div class="menu-inferior">
+
+            <form th:action="@{/logout}"
+                  method="post"
+                  class="form-cerrar-sesion">
+
+                <button type="submit"
+                        class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+
+            </form>
+
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+
+        </div>
+
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/panel}" class="volver-panel">
+                ← Volver al panel
+            </a>
+
+            <h1 th:text="${titulo}">
+                Nombre del módulo
+            </h1>
+
+            <p th:text="${descripcion}">
+                Descripción del módulo.
+            </p>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <h2>Funciones del módulo</h2>
+
+            <p class="descripcion">
+                Funcionalidades que implementaremos
+                durante el desarrollo del sistema.
+            </p>
+
+            <div class="contenedor-funciones">
+
+                <ul class="lista-funciones">
+
+                    <li th:each="funcion : ${funciones}"
+                        th:text="${funcion}">
+                        Función
+                    </li>
+
+                </ul>
+
+                <p class="aviso-desarrollo">
+                    Este módulo se encuentra en desarrollo.
+                    Próximamente incorporaremos sus formularios,
+                    operaciones y conexión con la base de datos.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026 -
+    Sistema de Gestión Comercial
+</footer>
+
+</body>
+</html>

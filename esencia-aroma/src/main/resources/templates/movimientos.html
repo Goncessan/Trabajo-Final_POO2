@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Movimientos</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}" class="activo">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+
+        <div class="menu-inferior">
+            <form th:action="@{/logout}"
+                  method="post"
+                  class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+            <a th:href="@{/inventario}"
+               class="volver-panel">
+                ← Volver al inventario
+            </a>
+
+            <h1>Historial de movimientos</h1>
+
+            <p>
+                Consulta las entradas y salidas registradas,
+                sus cantidades y sus motivos.
+            </p>
+        </section>
+
+        <section class="seccion-modulos">
+
+            <div class="inventario-cabecera">
+                <div>
+                    <h2>Movimientos registrados</h2>
+                    <p class="descripcion">
+                        Historial de operaciones del inventario.
+                    </p>
+                </div>
+
+                <a th:href="@{/inventario/movimientos/nuevo}"
+                   class="btn-primario">
+                    + Nuevo movimiento
+                </a>
+            </div>
+
+            <div th:if="${mensaje}"
+                 class="alerta-exito"
+                 th:text="${mensaje}">
+            </div>
+
+            <div class="tabla-contenedor">
+
+                <div class="estado-vacio"
+                     th:if="${#lists.isEmpty(movimientos)}">
+                    Todavía no hay movimientos registrados.
+                </div>
+
+                <table class="tabla-productos"
+                       th:unless="${#lists.isEmpty(movimientos)}">
+
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Producto</th>
+                        <th>Tipo</th>
+                        <th>Cantidad</th>
+                        <th>Stock anterior</th>
+                        <th>Stock posterior</th>
+                        <th>Motivo</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="movimiento : ${movimientos}">
+
+                        <td th:text="${#temporals.format(movimiento.fecha, 'dd/MM/yyyy HH:mm')}">
+                        </td>
+
+                        <td>
+                            <strong th:text="${movimiento.producto.codigo}"></strong>
+                            <div th:text="${movimiento.producto.nombre}"></div>
+                        </td>
+
+                        <td>
+                            <span class="estado-stock"
+                                  th:classappend="${movimiento.tipo.name() == 'SALIDA'} ? 'stock-bajo' : ''"
+                                  th:text="${movimiento.tipo}">
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong th:text="${movimiento.tipo.name() == 'ENTRADA' ? '+' + movimiento.cantidad : '-' + movimiento.cantidad}">
+                            </strong>
+                        </td>
+
+                        <td th:text="${movimiento.stockAnterior}"></td>
+
+                        <td th:text="${movimiento.stockPosterior}"></td>
+
+                        <td th:text="${movimiento.motivo}"></td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026 -
+    Sistema de Gestión Comercial
+</footer>
+
+</body>
+</html>

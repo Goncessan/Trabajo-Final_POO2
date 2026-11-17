@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Clientes y Ventas</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}" class="activo">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post"
+                  class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+        <section class="bienvenida">
+            <a th:href="@{/panel}" class="volver-panel">
+                ← Volver al panel
+            </a>
+            <h1>Clientes y Ventas</h1>
+            <p>Administra clientes, encargos y operaciones de venta.</p>
+        </section>
+
+        <section class="seccion-modulos">
+            <h2>Panel comercial</h2>
+
+            <div class="ea-resumen">
+                <div class="ea-tarjeta">
+                    <span>Clientes registrados</span>
+                    <strong th:text="${#lists.size(clientes)}">0</strong>
+                </div>
+                <div class="ea-tarjeta">
+                    <span>Encargos registrados</span>
+                    <strong th:text="${#lists.size(pedidos)}">0</strong>
+                </div>
+                <div class="ea-tarjeta">
+                    <span>Ventas registradas</span>
+                    <strong th:text="${#lists.size(ventas)}">0</strong>
+                </div>
+            </div>
+
+            <div class="ea-opciones">
+                <a th:href="@{/ventas/clientes}" class="ea-opcion">
+                    <h3>Clientes</h3>
+                    <p>Registrar y consultar compradores.</p>
+                    <span>Administrar clientes →</span>
+                </a>
+
+                <a th:href="@{/ventas/pedidos}" class="ea-opcion">
+                    <h3>Pedidos de clientes</h3>
+                    <p>Controlar encargos por catálogo y entregas.</p>
+                    <span>Consultar encargos →</span>
+                </a>
+
+                <a th:href="@{/ventas/registrar}" class="ea-opcion">
+                    <h3>Registrar venta</h3>
+                    <p>Realizar ventas al contado y al crédito.</p>
+                    <span>Nueva venta →</span>
+                </a>
+
+                <a th:href="@{/ventas/historial}" class="ea-opcion">
+                    <h3>Historial de ventas</h3>
+                    <p>Consultar importes, pagos y saldos.</p>
+                    <span>Ver historial →</span>
+                </a>
+            </div>
+        </section>
+    </main>
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026 - Sistema de Gestión Comercial
+</footer>
+</body>
+</html>
