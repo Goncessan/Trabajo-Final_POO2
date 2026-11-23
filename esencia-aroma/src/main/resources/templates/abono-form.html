@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Registrar abono</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}" class="activo">
+                Cobranzas y Reportes
+            </a>
+        </nav>
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post"
+                  class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+        <section class="bienvenida">
+            <a th:href="@{/cobranzas}" class="volver-panel">
+                ← Volver a Cobranzas
+            </a>
+            <h1>Registrar abono</h1>
+            <p>Actualiza el saldo pendiente de una venta al crédito.</p>
+        </section>
+
+        <section class="seccion-modulos">
+
+            <div class="ea-bloque">
+                <h2>Información de la venta</h2>
+
+                <div class="ea-campos">
+                    <div class="ea-campo">
+                        <label>Cliente</label>
+                        <strong th:text="${venta.cliente.nombre}"></strong>
+                    </div>
+
+                    <div class="ea-campo">
+                        <label>Producto</label>
+                        <strong th:text="${venta.producto.nombre}"></strong>
+                    </div>
+                </div>
+
+                <div class="ea-resumen">
+                    <div class="ea-tarjeta">
+                        <span>Total de la venta</span>
+                        <strong th:text="|S/ ${venta.total}|"></strong>
+                    </div>
+
+                    <div class="ea-tarjeta">
+                        <span>Monto pagado</span>
+                        <strong th:text="|S/ ${venta.montoPagado}|"></strong>
+                    </div>
+
+                    <div class="ea-tarjeta">
+                        <span>Saldo pendiente</span>
+                        <strong th:text="|S/ ${venta.saldo}|"></strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ea-bloque">
+                <h2>Nuevo abono</h2>
+
+                <form th:action="@{/cobranzas/abonar/{id}(id=${venta.id})}"
+                      th:object="${formulario}"
+                      method="post">
+
+                    <div class="alerta-error"
+                         th:if="${#fields.hasAnyErrors()}">
+                        <p th:each="e : ${#fields.allErrors()}"
+                           th:text="${e.defaultMessage}"></p>
+                    </div>
+
+                    <div class="ea-campos">
+                        <div class="ea-campo">
+                            <label>Importe del abono (S/) *</label>
+                            <input type="number"
+                                   th:field="*{monto}"
+                                   min="0.01"
+                                   step="0.01"
+                                   required>
+                        </div>
+
+                        <div class="ea-campo">
+                            <label>Observación</label>
+                            <input type="text"
+                                   th:field="*{observacion}"
+                                   maxlength="200"
+                                   placeholder="Ej. Abono en efectivo">
+                        </div>
+                    </div>
+
+                    <p class="ea-nota">
+                        El abono no puede superar el saldo pendiente.
+                    </p>
+
+                    <div class="ea-acciones">
+                        <a th:href="@{/cobranzas}"
+                           class="btn-secundario">
+                            Cancelar
+                        </a>
+
+                        <button type="submit" class="btn-primario">
+                            Guardar abono
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="ea-bloque">
+                <h2>Historial de abonos</h2>
+
+                <p class="descripcion">
+                    Pago inicial registrado:
+                    <strong th:text="|S/ ${venta.pagoInicial}|"></strong>
+                </p>
+
+                <div class="estado-vacio"
+                     th:if="${#lists.isEmpty(abonos)}">
+                    Todavía no se han registrado abonos posteriores.
+                </div>
+
+                <div class="tabla-contenedor"
+                     th:unless="${#lists.isEmpty(abonos)}">
+                    <table class="tabla-productos">
+                        <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Importe</th>
+                            <th>Observación</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:each="a : ${abonos}">
+                            <td th:text="${#temporals.format(a.fechaRegistro, 'dd/MM/yyyy HH:mm')}">
+                            </td>
+                            <td th:text="|S/ ${a.monto}|"></td>
+                            <td th:text="${a.observacion}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </main>
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026 - Sistema de Gestión Comercial
+</footer>
+</body>
+</html>

@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Registrar venta</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}" class="activo">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post"
+                  class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+        <section class="bienvenida">
+            <a th:href="@{/ventas}" class="volver-panel">
+                ← Volver a Clientes y Ventas
+            </a>
+            <h1>Registrar venta</h1>
+            <p>Registra la entrega de productos y su forma de pago.</p>
+        </section>
+
+        <section class="seccion-modulos">
+            <div class="ea-bloque">
+                <h2>Datos de la venta</h2>
+
+                <div class="alerta-error"
+                     th:if="${#lists.isEmpty(clientes) or #lists.isEmpty(productos)}">
+                    Para registrar una venta necesitas al menos
+                    un cliente y un producto en Inventario.
+                </div>
+
+                <form th:action="@{/ventas/registrar}"
+                      th:object="${formulario}"
+                      method="post">
+
+                    <div class="alerta-error"
+                         th:if="${#fields.hasAnyErrors()}">
+                        <p th:each="e : ${#fields.allErrors()}"
+                           th:text="${e.defaultMessage}"></p>
+                    </div>
+
+                    <div class="ea-campos">
+
+                        <div class="ea-campo">
+                            <label>Cliente *</label>
+                            <select th:field="*{clienteId}" required>
+                                <option value="">Seleccionar cliente</option>
+                                <option th:each="c : ${clientes}"
+                                        th:value="${c.id}"
+                                        th:text="${c.nombre}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="ea-campo">
+                            <label>Encargo asociado (opcional)</label>
+                            <select th:field="*{pedidoClienteId}">
+                                <option value="">Venta directa</option>
+                                <option th:each="p : ${pedidosPendientes}"
+                                        th:value="${p.id}"
+                                        th:text="|#${p.id} - ${p.cliente.nombre} - ${p.nombreProducto} (${p.cantidadPendiente} pendiente)|">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="ea-campo">
+                            <label>Producto del inventario *</label>
+                            <select id="productoVenta"
+                                    th:field="*{productoId}" required>
+                                <option value="">Seleccionar producto</option>
+                                <option th:each="p : ${productos}"
+                                        th:value="${p.id}"
+                                        th:text="|${p.codigo} - ${p.nombre} (Stock: ${p.stock})|"
+                                        th:attr="data-precio=${p.precioVenta}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="ea-campo">
+                            <label>Cantidad *</label>
+                            <input type="number"
+                                   th:field="*{cantidad}"
+                                   min="1" step="1" required>
+                        </div>
+
+                        <div class="ea-campo">
+                            <label>Precio unitario (S/) *</label>
+                            <input id="precioVenta"
+                                   type="number"
+                                   th:field="*{precioUnitario}"
+                                   min="0.01" step="0.01" required>
+                        </div>
+
+                        <div class="ea-campo">
+                            <label>Forma de pago *</label>
+                            <select id="formaPago"
+                                    th:field="*{formaPago}" required>
+                                <option th:each="f : ${formasPago}"
+                                        th:value="${f.name()}"
+                                        th:text="${f.nombre}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="ea-campo" id="seccionPagoInicial">
+                            <label>Abono inicial (S/)</label>
+                            <input type="number"
+                                   th:field="*{pagoInicial}"
+                                   min="0" step="0.01">
+                        </div>
+                    </div>
+
+                    <p class="ea-nota">
+                        Al registrar la venta se descontará el stock.
+                        Si es al contado, se registrará como pagada.
+                        Si es al crédito, su saldo pasará a Cobranzas.
+                    </p>
+
+                    <div class="ea-acciones">
+                        <a th:href="@{/ventas}"
+                           class="btn-secundario">Cancelar</a>
+
+                        <button type="submit" class="btn-primario"
+                                th:disabled="${#lists.isEmpty(clientes) or #lists.isEmpty(productos)}">
+                            Guardar venta
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026 - Sistema de Gestión Comercial
+</footer>
+
+<script>
+    const producto = document.getElementById("productoVenta");
+    const precio = document.getElementById("precioVenta");
+    const formaPago = document.getElementById("formaPago");
+    const seccionPago = document.getElementById("seccionPagoInicial");
+
+    producto.addEventListener("change", () => {
+        const opcion = producto.selectedOptions[0];
+
+        if (opcion && opcion.dataset.precio) {
+            precio.value = opcion.dataset.precio;
+        }
+    });
+
+    function actualizarFormaPago() {
+        seccionPago.style.display =
+            formaPago.value === "CREDITO" ? "" : "none";
+    }
+
+    formaPago.addEventListener("change", actualizarFormaPago);
+    actualizarFormaPago();
+</script>
+
+</body>
+</html>

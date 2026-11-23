@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Historial de ventas</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}" class="activo">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post"
+                  class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+        <section class="bienvenida">
+            <a th:href="@{/ventas}" class="volver-panel">
+                ← Volver a Clientes y Ventas
+            </a>
+            <h1>Historial de ventas</h1>
+            <p>Consulta ventas, importes y saldos pendientes.</p>
+        </section>
+
+        <section class="seccion-modulos">
+            <div class="inventario-cabecera">
+                <h2>Ventas registradas</h2>
+                <a th:href="@{/ventas/registrar}"
+                   class="btn-primario">+ Nueva venta</a>
+            </div>
+
+            <div class="alerta-exito"
+                 th:if="${mensaje}" th:text="${mensaje}"></div>
+
+            <div th:if="${#lists.isEmpty(ventas)}"
+                 class="estado-vacio">
+                Todavía no hay ventas registradas.
+            </div>
+
+            <div class="tabla-contenedor"
+                 th:unless="${#lists.isEmpty(ventas)}">
+                <table class="tabla-productos">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Producto</th>
+                        <th>Cant.</th>
+                        <th>Total</th>
+                        <th>Pago</th>
+                        <th>Pagado</th>
+                        <th>Saldo</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="v : ${ventas}">
+                        <td th:text="${#temporals.format(v.fechaRegistro, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td th:text="${v.cliente.nombre}"></td>
+                        <td th:text="${v.producto.nombre}"></td>
+                        <td th:text="${v.cantidad}"></td>
+                        <td th:text="|S/ ${v.total}|"></td>
+                        <td th:text="${v.formaPago.nombre}"></td>
+                        <td th:text="|S/ ${v.montoPagado}|"></td>
+                        <td th:text="|S/ ${v.saldo}|"></td>
+                        <td th:text="${v.estadoPago}"></td>
+                        <td>
+                            <a th:if="${v.estadoPago == 'PENDIENTE'}"
+                               th:href="@{/cobranzas/abonar/{id}(id=${v.id})}"
+                               class="ea-enlace">
+                                Registrar abono
+                            </a>
+                            <span th:if="${v.estadoPago == 'PAGADO'}">
+                                Pagado
+                            </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026 - Sistema de Gestión Comercial
+</footer>
+</body>
+</html>

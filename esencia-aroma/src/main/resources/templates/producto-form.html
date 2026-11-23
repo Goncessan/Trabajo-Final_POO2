@@ -1,0 +1,268 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Nuevo producto</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}" class="activo">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+
+        <div class="menu-inferior">
+
+            <form th:action="@{/logout}"
+                  method="post"
+                  class="form-cerrar-sesion">
+
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+
+            </form>
+
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/inventario}" class="volver-panel">
+                ← Volver al inventario
+            </a>
+
+
+            <h1 th:text="${producto.id == null}
+                ? 'Registrar nuevo producto'
+                 : 'Editar producto'">
+                Registrar nuevo producto
+            </h1>
+
+
+            <p>
+                Completa la información del producto
+                que deseas incorporar al inventario.
+            </p>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+
+            <form class="formulario-producto"
+                  th:action="${producto.id == null}
+                  ? @{/inventario/nuevo}
+                  : @{/inventario/editar/{id}(id=${producto.id})}"
+                  th:object="${producto}"
+                  method="post">
+
+                <div class="grid-formulario">
+
+                    <div class="campo-formulario">
+
+                        <label for="codigo">Código *</label>
+
+                        <input id="codigo"
+                               type="text"
+                               th:field="*{codigo}"
+                               maxlength="35"
+                               placeholder="Ej. AV-001"
+                               required>
+
+                        <small class="mensaje-error"
+                               th:if="${#fields.hasErrors('codigo')}"
+                               th:errors="*{codigo}">
+                        </small>
+                    </div>
+
+                    <div class="campo-formulario">
+
+                        <label for="nombre">Nombre del producto *</label>
+
+                        <input id="nombre"
+                               type="text"
+                               th:field="*{nombre}"
+                               maxlength="120"
+                               placeholder="Ej. Perfume floral 50 ml"
+                               required>
+
+                        <small class="mensaje-error"
+                               th:if="${#fields.hasErrors('nombre')}"
+                               th:errors="*{nombre}">
+                        </small>
+                    </div>
+
+                    <div class="campo-formulario">
+
+                        <label for="marca">Marca *</label>
+
+                        <select id="marca"
+                                th:field="*{marca}"
+                                required>
+
+                            <option value="">Seleccionar marca</option>
+
+                            <option th:each="marca : ${marcas}"
+                                    th:value="${marca.name()}"
+                                    th:text="${marca.nombre}">
+                            </option>
+
+                        </select>
+
+                        <small class="mensaje-error"
+                               th:if="${#fields.hasErrors('marca')}"
+                               th:errors="*{marca}">
+                        </small>
+                    </div>
+
+                    <div class="campo-formulario">
+
+                        <label for="categoria">Categoría *</label>
+
+                        <input id="categoria"
+                               type="text"
+                               th:field="*{categoria}"
+                               maxlength="60"
+                               placeholder="Ej. Perfumería"
+                               required>
+
+                        <small class="mensaje-error"
+                               th:if="${#fields.hasErrors('categoria')}"
+                               th:errors="*{categoria}">
+                        </small>
+                    </div>
+
+                    <div class="campo-formulario">
+
+                        <label for="precioCompra">Precio de compra (S/) *</label>
+
+                        <input id="precioCompra"
+                               type="number"
+                               step="0.01"
+                               min="0"
+                               th:field="*{precioCompra}"
+                               required>
+
+                        <small class="mensaje-error"
+                               th:if="${#fields.hasErrors('precioCompra')}"
+                               th:errors="*{precioCompra}">
+                        </small>
+                    </div>
+
+                    <div class="campo-formulario">
+
+                        <label for="precioVenta">Precio de venta (S/) *</label>
+
+                        <input id="precioVenta"
+                               type="number"
+                               step="0.01"
+                               min="0.01"
+                               th:field="*{precioVenta}"
+                               required>
+
+                        <small class="mensaje-error"
+                               th:if="${#fields.hasErrors('precioVenta')}"
+                               th:errors="*{precioVenta}">
+                        </small>
+                    </div>
+
+                    <div class="campo-formulario">
+
+                        <label for="stock">Stock inicial *</label>
+
+                        <input id="stock"
+                               type="number"
+                               min="0"
+                               step="1"
+                               th:field="*{stock}"
+                               th:readonly="${producto.id != null}"
+                               required>
+
+                        <small class="ayuda-stock"
+                               th:if="${producto.id != null}">
+                            Para modificar las existencias, utiliza
+                            la opción Registrar movimiento.
+                        </small>
+
+                        <small class="mensaje-error"
+                               th:if="${#fields.hasErrors('stock')}"
+                               th:errors="*{stock}">
+                        </small>
+                    </div>
+
+                    <div class="campo-formulario">
+
+                        <label for="stockMinimo">Stock mínimo *</label>
+
+                        <input id="stockMinimo"
+                               type="number"
+                               min="0"
+                               step="1"
+                               th:field="*{stockMinimo}"
+                               required>
+
+                        <small class="mensaje-error"
+                               th:if="${#fields.hasErrors('stockMinimo')}"
+                               th:errors="*{stockMinimo}">
+                        </small>
+                    </div>
+
+                </div>
+
+                <div class="acciones-formulario">
+
+                    <a th:href="@{/inventario}"
+                       class="btn-secundario">
+                        Cancelar
+                    </a>
+
+                    <button type="submit"
+                            class="btn-primario"
+                            th:text="${producto.id == null}
+                            ? 'Guardar producto'
+                            : 'Guardar cambios'">
+                           Guardar producto
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>

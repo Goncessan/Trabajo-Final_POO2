@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Reportes</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}" class="activo">
+                Cobranzas y Reportes
+            </a>
+        </nav>
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post"
+                  class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+        <section class="bienvenida">
+            <a th:href="@{/cobranzas}" class="volver-panel">
+                ← Volver a Cobranzas
+            </a>
+            <h1>Reportes comerciales</h1>
+            <p>Resumen general de ventas, pagos y saldos.</p>
+        </section>
+
+        <section class="seccion-modulos">
+
+            <div class="ea-resumen">
+                <div class="ea-tarjeta">
+                    <span>Total vendido</span>
+                    <strong th:text="|S/ ${totalVendido}|">
+                        S/ 0.00
+                    </strong>
+                </div>
+
+                <div class="ea-tarjeta">
+                    <span>Total cobrado</span>
+                    <strong th:text="|S/ ${totalCobrado}|">
+                        S/ 0.00
+                    </strong>
+                </div>
+
+                <div class="ea-tarjeta">
+                    <span>Saldo por cobrar</span>
+                    <strong th:text="|S/ ${totalPendiente}|">
+                        S/ 0.00
+                    </strong>
+                </div>
+            </div>
+
+            <div class="ea-bloque">
+                <h2>Resumen de operaciones</h2>
+
+                <p>
+                    Ventas registradas:
+                    <strong th:text="${#lists.size(ventas)}">0</strong>
+                </p>
+
+                <p>
+                    Ventas con saldo pendiente:
+                    <strong th:text="${ventasPendientes}">0</strong>
+                </p>
+            </div>
+
+            <div class="ea-bloque">
+                <h2>Detalle de ventas</h2>
+
+                <div class="estado-vacio"
+                     th:if="${#lists.isEmpty(ventas)}">
+                    Todavía no hay ventas para mostrar.
+                </div>
+
+                <div class="tabla-contenedor"
+                     th:unless="${#lists.isEmpty(ventas)}">
+
+                    <table class="tabla-productos">
+                        <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Producto</th>
+                            <th>Forma de pago</th>
+                            <th>Total</th>
+                            <th>Cobrado</th>
+                            <th>Pendiente</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:each="v : ${ventas}">
+                            <td th:text="${#temporals.format(v.fechaRegistro, 'dd/MM/yyyy')}">
+                            </td>
+                            <td th:text="${v.cliente.nombre}"></td>
+                            <td th:text="${v.producto.nombre}"></td>
+                            <td th:text="${v.formaPago.nombre}"></td>
+                            <td th:text="|S/ ${v.total}|"></td>
+                            <td th:text="|S/ ${v.montoPagado}|"></td>
+                            <td th:text="|S/ ${v.saldo}|"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </main>
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026 - Sistema de Gestión Comercial
+</footer>
+</body>
+</html>

@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Registrar movimiento</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}" class="activo">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+
+        <div class="menu-inferior">
+            <form th:action="@{/logout}"
+                  method="post"
+                  class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+            <a th:href="@{/inventario}"
+               class="volver-panel">
+                ← Volver al inventario
+            </a>
+
+            <h1>Registrar movimiento de inventario</h1>
+
+            <p>
+                Registra entradas y salidas de productos.
+                El sistema actualizará automáticamente
+                las existencias.
+            </p>
+        </section>
+
+        <section class="seccion-modulos">
+
+            <div class="alerta-error"
+                 th:if="${#lists.isEmpty(productos)}">
+                No hay productos registrados.
+                Primero debes crear un producto en Inventario.
+            </div>
+
+            <form class="formulario-producto"
+                  th:action="@{/inventario/movimientos/nuevo}"
+                  th:object="${formulario}"
+                  method="post">
+
+                <div class="alerta-error"
+                     th:if="${#fields.hasGlobalErrors()}">
+
+                    <p th:each="error : ${#fields.globalErrors()}"
+                       th:text="${error.defaultMessage}">
+                    </p>
+                </div>
+
+                <div class="grid-formulario">
+
+                    <div class="campo-formulario">
+                        <label for="productoId">Producto *</label>
+
+                        <select id="productoId"
+                                th:field="*{productoId}"
+                                required>
+
+                            <option value="">
+                                Seleccionar producto
+                            </option>
+
+                            <option th:each="p : ${productos}"
+                                    th:value="${p.id}"
+                                    th:text="${p.codigo + ' - ' + p.nombre + ' (Stock: ' + p.stock + ')'}">
+                            </option>
+
+                        </select>
+
+                        <small class="mensaje-error"
+                               th:if="${#fields.hasErrors('productoId')}"
+                               th:errors="*{productoId}">
+                        </small>
+                    </div>
+
+                    <div class="campo-formulario">
+                        <label for="tipo">Tipo de movimiento *</label>
+
+                        <select id="tipo"
+                                th:field="*{tipo}"
+                                required>
+
+                            <option value="">
+                                Seleccionar movimiento
+                            </option>
+
+                            <option th:each="t : ${tipos}"
+                                    th:value="${t.name()}"
+                                    th:text="${t.name()}">
+                            </option>
+
+                        </select>
+
+                        <small class="mensaje-error"
+                               th:if="${#fields.hasErrors('tipo')}"
+                               th:errors="*{tipo}">
+                        </small>
+                    </div>
+
+                    <div class="campo-formulario">
+                        <label for="cantidad">Cantidad *</label>
+
+                        <input id="cantidad"
+                               type="number"
+                               min="1"
+                               step="1"
+                               th:field="*{cantidad}"
+                               placeholder="Ej. 5"
+                               required>
+
+                        <small class="mensaje-error"
+                               th:if="${#fields.hasErrors('cantidad')}"
+                               th:errors="*{cantidad}">
+                        </small>
+                    </div>
+
+                    <div class="campo-formulario">
+                        <label for="motivo">Motivo *</label>
+
+                        <input id="motivo"
+                               type="text"
+                               th:field="*{motivo}"
+                               maxlength="250"
+                               placeholder="Ej. Recepción de pedido de campaña"
+                               required>
+
+                        <small class="mensaje-error"
+                               th:if="${#fields.hasErrors('motivo')}"
+                               th:errors="*{motivo}">
+                        </small>
+                    </div>
+
+                </div>
+
+                <p class="nota-movimiento">
+                    Las entradas aumentan las existencias y las
+                    salidas las disminuyen. No se permiten salidas
+                    superiores al stock disponible.
+                </p>
+
+                <div class="acciones-formulario">
+
+                    <a th:href="@{/inventario}"
+                       class="btn-secundario">
+                        Cancelar
+                    </a>
+
+                    <button type="submit"
+                            class="btn-primario"
+                            th:disabled="${#lists.isEmpty(productos)}">
+                        Registrar movimiento
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026 -
+    Sistema de Gestión Comercial
+</footer>
+
+</body>
+</html>
