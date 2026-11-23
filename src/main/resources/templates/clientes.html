@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Clientes</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}" class="activo">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post"
+                  class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+        <section class="bienvenida">
+            <a th:href="@{/ventas}" class="volver-panel">
+                ← Volver a Clientes y Ventas
+            </a>
+            <h1>Gestión de clientes</h1>
+            <p>Registra y consulta la información de tus compradores.</p>
+        </section>
+
+        <section class="seccion-modulos">
+            <div class="ea-bloque">
+                <h2>Nuevo cliente</h2>
+
+                <div class="alerta-exito"
+                     th:if="${mensaje}" th:text="${mensaje}"></div>
+
+                <form th:action="@{/ventas/clientes}"
+                      th:object="${cliente}"
+                      method="post">
+
+                    <div class="alerta-error"
+                         th:if="${#fields.hasAnyErrors()}">
+                        <p th:each="e : ${#fields.allErrors()}"
+                           th:text="${e.defaultMessage}"></p>
+                    </div>
+
+                    <div class="ea-campos">
+                        <div class="ea-campo">
+                            <label>Nombre completo *</label>
+                            <input type="text" th:field="*{nombre}"
+                                   maxlength="120" required>
+                        </div>
+
+                        <div class="ea-campo">
+                            <label>Teléfono</label>
+                            <input type="text" th:field="*{telefono}"
+                                   maxlength="30">
+                        </div>
+
+                        <div class="ea-campo">
+                            <label>Dirección</label>
+                            <input type="text" th:field="*{direccion}"
+                                   maxlength="200">
+                        </div>
+                    </div>
+
+                    <div class="ea-acciones">
+                        <button type="submit" class="btn-primario">
+                            Guardar cliente
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="ea-bloque">
+                <h2>Clientes registrados</h2>
+
+                <div th:if="${#lists.isEmpty(clientes)}"
+                     class="estado-vacio">
+                    Todavía no hay clientes registrados.
+                </div>
+
+                <div class="tabla-contenedor"
+                     th:unless="${#lists.isEmpty(clientes)}">
+                    <table class="tabla-productos">
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Dirección</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="c : ${clientes}">
+                            <td th:text="${c.nombre}"></td>
+                            <td th:text="${c.telefono}"></td>
+                            <td th:text="${c.direccion}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026 - Sistema de Gestión Comercial
+</footer>
+</body>
+</html>

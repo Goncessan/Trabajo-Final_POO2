@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Alertas de stock</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}" class="activo">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post"
+                  class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+        <section class="bienvenida">
+            <a th:href="@{/ventas}" class="volver-panel">
+                ← Volver a Clientes y Ventas
+            </a>
+            <h1>Alertas de stock</h1>
+            <p>Productos que quedaron con stock bajo o agotado después de una venta.</p>
+        </section>
+
+        <section class="seccion-modulos">
+            <div class="inventario-cabecera">
+                <h2>Alertas pendientes</h2>
+                <a th:href="@{/inventario}"
+                   class="btn-secundario">Ir al inventario</a>
+            </div>
+
+            <div class="alerta-exito"
+                 th:if="${mensaje}" th:text="${mensaje}"></div>
+
+            <div th:if="${#lists.isEmpty(alertas)}"
+                 class="estado-vacio">
+                No hay alertas pendientes.
+            </div>
+
+            <div class="tabla-contenedor"
+                 th:unless="${#lists.isEmpty(alertas)}">
+                <table class="tabla-productos">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Producto</th>
+                        <th>Tipo</th>
+                        <th>Stock</th>
+                        <th>Mínimo</th>
+                        <th>Detalle</th>
+                        <th>Acción</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="a : ${alertas}">
+                        <td th:text="${#temporals.format(a.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td th:text="${a.productoNombre}"></td>
+                        <td>
+                            <span class="estado-stock stock-bajo"
+                                  th:text="${a.tipo.nombre}"></span>
+                        </td>
+                        <td th:text="${a.stockActual}"></td>
+                        <td th:text="${a.stockMinimo}"></td>
+                        <td th:text="${a.mensaje}"></td>
+                        <td>
+                            <form th:action="@{/ventas/alertas/{id}/atender(id=${a.id})}"
+                                  method="post">
+                                <button type="submit" class="btn-secundario">
+                                    Marcar atendida
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026 - Sistema de Gestión Comercial
+</footer>
+</body>
+</html>

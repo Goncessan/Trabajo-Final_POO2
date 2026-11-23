@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Esencia & Aroma | Abastecimiento</title>
+
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}" class="activo">
+                Abastecimiento
+            </a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">
+                Cobranzas y Reportes
+            </a>
+        </nav>
+
+        <div class="menu-inferior">
+            <form th:action="@{/logout}"
+                  method="post"
+                  class="form-cerrar-sesion">
+
+                <button type="submit"
+                        class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/panel}"
+               class="volver-panel">
+                ← Volver al panel
+            </a>
+
+            <h1>Abastecimiento y Recepción de Pedidos</h1>
+
+            <p>
+                Consulta las cajas recibidas por marca
+                y campaña, sus productos y faltantes.
+            </p>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <div class="inventario-cabecera">
+
+                <div>
+                    <h2>Recepciones registradas</h2>
+
+                    <p class="descripcion">
+                        Control de productos solicitados
+                        y realmente recibidos.
+                    </p>
+                </div>
+
+                <a th:href="@{/abastecimiento/nueva}"
+                   class="btn-primario">
+                    + Nueva recepción
+                </a>
+
+            </div>
+
+            <div class="alerta-exito"
+                 th:if="${mensaje}"
+                 th:text="${mensaje}">
+            </div>
+
+            <!-- MENSAJE CUANDO NO HAY RECEPCIONES -->
+            <div class="estado-vacio"
+                 th:if="${#lists.isEmpty(recepciones)}">
+
+                Todavía no hay recepciones registradas.
+                Cuando llegue una caja, podrás registrar
+                aquí lo solicitado y lo recibido.
+
+            </div>
+
+            <!-- RECEPCIONES -->
+            <div th:unless="${#lists.isEmpty(recepciones)}">
+
+                <details class="recepcion-tarjeta"
+                         th:each="r : ${recepciones}">
+
+                    <summary class="recepcion-resumen">
+
+                        <span class="recepcion-nombre">
+                            <strong th:text="${r.marca.nombre}">
+                                Marca
+                            </strong>
+
+                            <span>
+                                · Campaña
+                                <strong th:text="${r.campania}">
+                                    12
+                                </strong>
+                            </span>
+                        </span>
+
+                        <span th:text="${#temporals.format(r.fechaRecepcion, 'dd/MM/yyyy')}">
+                        </span>
+
+                        <span class="recepcion-indicadores">
+                            <span>
+                                Solicitado:
+                                <strong th:text="${r.totalSolicitado}">0</strong>
+                            </span>
+
+                            <span>
+                                Recibido:
+                                <strong th:text="${r.totalRecibido}">0</strong>
+                            </span>
+
+                            <span>
+                                Faltante:
+                                <strong th:text="${r.totalFaltante}">0</strong>
+                            </span>
+                        </span>
+
+                        <span class="estado-recepcion"
+                              th:classappend="${r.totalFaltante > 0 ? 'con-faltantes' : 'recepcion-completa'}"
+                              th:text="${r.totalFaltante > 0 ? 'Con faltantes' : 'Completa'}">
+                        </span>
+
+                    </summary>
+
+                    <div class="tabla-contenedor">
+
+                        <table class="tabla-productos">
+
+                            <thead>
+                            <tr>
+                                <th>Código catálogo</th>
+                                <th>Código interno</th>
+                                <th>Producto</th>
+                                <th>Solicitado</th>
+                                <th>Recibido</th>
+                                <th>Faltante</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                            <tr th:each="d : ${r.detalles}">
+
+                                <td th:text="${d.codigoCatalogo}">
+                                </td>
+
+                                <td th:text="${d.producto.codigo}">
+                                </td>
+
+                                <td th:text="${d.producto.nombre}">
+                                </td>
+
+                                <td th:text="${d.cantidadSolicitada}">
+                                </td>
+
+                                <td th:text="${d.cantidadRecibida}">
+                                </td>
+
+                                <td>
+                                    <strong th:text="${d.cantidadFaltante}">
+                                    </strong>
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </details>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026 -
+    Sistema de Gestión Comercial
+</footer>
+
+</body>
+</html>

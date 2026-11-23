@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Esencia & Aroma | Nueva recepción</title>
+
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}" class="activo">
+                Abastecimiento
+            </a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">
+                Cobranzas y Reportes
+            </a>
+        </nav>
+
+        <div class="menu-inferior">
+
+            <form th:action="@{/logout}"
+                  method="post"
+                  class="form-cerrar-sesion">
+
+                <button type="submit"
+                        class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/abastecimiento}"
+               class="volver-panel">
+                ← Volver a Abastecimiento
+            </a>
+
+            <h1>Registrar recepción de pedido</h1>
+
+            <p>
+                Registra lo solicitado y lo recibido de
+                cada producto de la caja.
+            </p>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <form class="recepcion-formulario"
+                  th:action="@{/abastecimiento/nueva}"
+                  th:object="${formulario}"
+                  method="post">
+
+                <!-- ERRORES DE VALIDACION -->
+                <div class="alerta-error"
+                     th:if="${#fields.hasAnyErrors()}">
+
+                    <p th:each="error : ${#fields.allErrors()}"
+                       th:text="${error.defaultMessage}">
+                    </p>
+
+                </div>
+
+                <div class="alerta-error"
+                     th:if="${#lists.isEmpty(productos)}">
+                    No hay productos registrados. Añade un producto para continuar.
+                </div>
+
+                <h2>Datos de la recepción</h2>
+
+                <div class="recepcion-datos">
+
+                    <div class="filtro-campo">
+                        <label for="marca">Marca *</label>
+
+                        <select id="marca"
+                                th:field="*{marca}"
+                                required>
+
+                            <option value="">
+                                Selecciona una marca
+                            </option>
+
+                            <option th:each="m : ${marcas}"
+                                    th:value="${m.name()}"
+                                    th:text="${m.nombre}">
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div class="filtro-campo">
+                        <label for="campania">Campaña *</label>
+
+                        <input type="text"
+                               id="campania"
+                               th:field="*{campania}"
+                               maxlength="30"
+                               placeholder="Ej. 12"
+                               required>
+                    </div>
+
+                    <div class="filtro-campo">
+                        <label for="fechaRecepcion">
+                            Fecha de recepción *
+                        </label>
+
+                        <input type="date"
+                               id="fechaRecepcion"
+                               th:field="*{fechaRecepcion}"
+                               required>
+                    </div>
+
+                </div>
+
+                <div class="recepcion-separador"></div>
+
+                <div class="recepcion-productos-cabecera">
+
+                    <h2>Productos de la caja</h2>
+
+                    <a th:href="@{/inventario/nuevo}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="btn-secundario">
+                        + Nuevo producto
+                    </a>
+
+                </div>
+
+                <p class="descripcion">
+                    Detalle de productos solicitados y recibidos por campaña.
+                </p>
+
+                <div id="filasProductos">
+
+                    <div class="fila-recepcion"
+                         th:each="fila, estado : *{detalles}">
+
+                        <!-- PRODUCTO INTERNO -->
+                        <div class="filtro-campo campo-producto">
+
+                            <label>Producto del inventario *</label>
+
+                            <select class="producto-select"
+                                    aria-label="Producto del inventario"
+                                    data-campo="productoId"
+                                    th:name="|detalles[${estado.index}].productoId|"
+                                    required>
+
+                                <option value="">
+                                    Seleccionar producto
+                                </option>
+
+                                <option th:each="p : ${productos}"
+                                        th:value="${p.id}"
+                                        th:text="${p.codigo + ' - ' + p.nombre}"
+                                        th:attr="data-marca=${p.marca.name()}"
+                                        th:selected="${fila.productoId != null and fila.productoId == p.id}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- CODIGO DE CATALOGO -->
+                        <div class="filtro-campo campo-catalogo">
+
+                            <label>Código catálogo *</label>
+
+                            <input type="text"
+                                   aria-label="Código de catálogo"
+                                   data-campo="codigoCatalogo"
+                                   th:name="|detalles[${estado.index}].codigoCatalogo|"
+                                   th:value="${fila.codigoCatalogo}"
+                                   maxlength="50"
+                                   placeholder="Ej. 13842"
+                                   required>
+                        </div>
+
+                        <!-- SOLICITADO -->
+                        <div class="filtro-campo campo-cantidad">
+
+                            <label>Solicitado *</label>
+
+                            <input type="number"
+                                   class="cantidad-solicitada"
+                                   aria-label="Cantidad solicitada"
+                                   data-campo="cantidadSolicitada"
+                                   th:name="|detalles[${estado.index}].cantidadSolicitada|"
+                                   th:value="${fila.cantidadSolicitada}"
+                                   min="1"
+                                   step="1"
+                                   placeholder="5"
+                                   required>
+                        </div>
+
+                        <!-- RECIBIDO -->
+                        <div class="filtro-campo campo-cantidad">
+
+                            <label>Recibido *</label>
+
+                            <input type="number"
+                                   class="cantidad-recibida"
+                                   aria-label="Cantidad recibida"
+                                   data-campo="cantidadRecibida"
+                                   th:name="|detalles[${estado.index}].cantidadRecibida|"
+                                   th:value="${fila.cantidadRecibida}"
+                                   min="0"
+                                   step="1"
+                                   placeholder="3"
+                                   required>
+                        </div>
+
+                        <!-- FALTANTE CALCULADO -->
+                        <div class="campo-faltante">
+                            <label>Faltante</label>
+                            <strong class="valor-faltante">—</strong>
+                        </div>
+
+                        <button type="button"
+                                class="quitar-fila">
+                            Quitar
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <button type="button"
+                        id="agregarFila"
+                        class="btn-secundario"
+                        th:disabled="${#lists.isEmpty(productos)}">
+                    + Agregar otro producto
+                </button>
+
+                <p class="nota-movimiento">
+                    Solo las cantidades recibidas se incorporarán al inventario.
+                </p>
+
+                <div class="acciones-formulario">
+
+                    <a th:href="@{/abastecimiento}"
+                       class="btn-secundario">
+                        Cancelar
+                    </a>
+
+                    <button type="submit"
+                            class="btn-primario"
+                            th:disabled="${#lists.isEmpty(productos)}">
+                        Guardar recepción
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026 -
+    Sistema de Gestión Comercial
+</footer>
+
+<script>
+    const contenedor = document.getElementById("filasProductos");
+    const selectorMarca = document.getElementById("marca");
+    const botonAgregar = document.getElementById("agregarFila");
+
+    // Mostrar solo productos de la marca elegida
+
+    function filtrarProductos() {
+
+        const marca = selectorMarca.value;
+
+        document.querySelectorAll(".producto-select")
+            .forEach(select => {
+
+                Array.from(select.options).forEach(opcion => {
+
+                    if (!opcion.value) return;
+
+                    const corresponde =
+                        marca !== "" &&
+                        opcion.dataset.marca === marca;
+
+                    opcion.hidden = !corresponde;
+                    opcion.disabled = !corresponde;
+                });
+
+                if (select.selectedOptions[0]?.disabled) {
+                    select.value = "";
+                }
+            });
+    }
+
+    // Calcular los faltantes de cada fila
+    function calcularFaltantes() {
+
+        contenedor.querySelectorAll(".fila-recepcion")
+            .forEach(fila => {
+
+                const campoSolicitado = fila.querySelector(
+                    ".cantidad-solicitada"
+                );
+                const campoRecibido = fila.querySelector(
+                    ".cantidad-recibida"
+                );
+                const resultado = fila.querySelector(
+                    ".valor-faltante"
+                );
+
+                // Limpiar los mensajes de validación anteriores.
+                campoRecibido.setCustomValidity("");
+
+                if (campoSolicitado.value === "" ||
+                    campoRecibido.value === "") {
+                    resultado.textContent = "—";
+                    return;
+                }
+
+                const diferencia =
+                    Number(campoSolicitado.value) -
+                    Number(campoRecibido.value);
+
+                if (diferencia < 0) {
+                    resultado.textContent = "Revisar";
+                    campoRecibido.setCustomValidity(
+                        "La cantidad recibida no puede superar la solicitada."
+                    );
+                } else {
+                    resultado.textContent = diferencia;
+                }
+            });
+    }
+
+    // Actualizar nombres para el formulario Java
+    function actualizarIndices() {
+
+        contenedor.querySelectorAll(".fila-recepcion")
+            .forEach((fila, indice) => {
+
+                fila.querySelectorAll("[data-campo]")
+                    .forEach(campo => {
+
+                        campo.name =
+                            "detalles[" + indice + "]."
+                            + campo.dataset.campo;
+                    });
+            });
+    }
+
+    // Agregar otro producto
+    botonAgregar.addEventListener("click", () => {
+
+        const filas = contenedor.querySelectorAll(
+            ".fila-recepcion"
+        );
+
+        if (filas.length >= 30) {
+            alert("Máximo 30 productos por recepción.");
+            return;
+        }
+
+        const nuevaFila = filas[0].cloneNode(true);
+
+        nuevaFila.querySelectorAll("input, select")
+            .forEach(campo => {
+                campo.value = "";
+            });
+
+        nuevaFila.querySelector(".valor-faltante")
+            .textContent = "—";
+
+        contenedor.appendChild(nuevaFila);
+
+        actualizarIndices();
+        filtrarProductos();
+        calcularFaltantes();
+    });
+
+    // Quitar una fila
+    contenedor.addEventListener("click", evento => {
+
+        if (!evento.target.classList.contains("quitar-fila")) {
+            return;
+        }
+
+        const filas = contenedor.querySelectorAll(
+            ".fila-recepcion"
+        );
+
+        const fila = evento.target.closest(
+            ".fila-recepcion"
+        );
+
+        if (filas.length > 1) {
+
+            fila.remove();
+
+        } else {
+
+            fila.querySelectorAll("input, select")
+                .forEach(campo => {
+                    campo.value = "";
+                });
+        }
+
+        actualizarIndices();
+        calcularFaltantes();
+    });
+
+    // Recalcular cuando cambian cantidades
+    contenedor.addEventListener("input", calcularFaltantes);
+    contenedor.addEventListener("change", calcularFaltantes);
+
+    selectorMarca.addEventListener(
+        "change",
+        filtrarProductos
+    );
+
+    filtrarProductos();
+    calcularFaltantes();
+</script>
+
+</body>
+</html>

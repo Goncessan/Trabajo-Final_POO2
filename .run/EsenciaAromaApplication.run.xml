@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="EsenciaAromaApplication" type="Application" factoryName="Application">
+    <envs>
+      <env name="APP_ADMIN_USERNAME" value="Esencia_aroma" />
+      <env name="APP_ADMIN_PASSWORD" value="Esencia_1234*" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.esenciayaroma.EsenciaAromaApplication" />
+    <module name="esencia-aroma" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

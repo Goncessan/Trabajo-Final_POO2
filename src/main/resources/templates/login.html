@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Iniciar sesión</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="login-body">
+
+<div class="login-tarjeta">
+
+    <div class="login-logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+
+    <p class="login-subtitulo">
+        Sistema de Gestión Comercial
+    </p>
+
+    <div class="login-separador"></div>
+
+    <h1>Bienvenida</h1>
+
+    <p class="login-descripcion">
+        Ingresa tus datos para acceder al sistema.
+    </p>
+
+    <div class="login-error" th:if="${param.error}">
+        Usuario o contraseña incorrectos.
+    </div>
+
+    <form th:action="@{/login}" method="post">
+
+        <div class="campo-login">
+            <label for="usuario">Usuario</label>
+
+            <input type="text"
+                   id="usuario"
+                   name="usuario"
+                   placeholder="Ingresa tu usuario"
+                   autocomplete="username"
+                   required>
+        </div>
+
+        <div class="campo-login">
+            <label for="contrasena">Contraseña</label>
+
+            <input type="password"
+                   id="contrasena"
+                   name="contrasena"
+                   placeholder="Ingresa tu contraseña"
+                   autocomplete="current-password"
+                   required>
+        </div>
+
+        <button type="submit" class="login-boton">
+            Iniciar sesión
+        </button>
+
+    </form>
+
+    <p class="login-pie">
+        Acceso exclusivo para personal autorizado.
+    </p>
+
+    <p class="login-copyright">
+        Esencia &amp; Aroma © 2026
+    </p>
+
+</div>
+
+</body>
+</html>
