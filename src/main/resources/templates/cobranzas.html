@@ -7,6 +7,7 @@
     <title>Esencia & Aroma | Cobranzas</title>
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
 </head>
+
 <body class="app-body">
 
 <header class="encabezado">
@@ -15,8 +16,11 @@
 </header>
 
 <div class="panel-principal">
+
     <aside class="menu-lateral">
+
         <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
         <nav class="menu-enlaces">
             <a th:href="@{/panel}">Inicio</a>
             <a th:href="@{/inventario}">Inventario</a>
@@ -26,51 +30,113 @@
                 Cobranzas y Reportes
             </a>
         </nav>
+
         <div class="menu-inferior">
+
             <form th:action="@{/logout}" method="post"
                   class="form-cerrar-sesion">
+
                 <button type="submit" class="btn-cerrar-sesion">
                     Cerrar sesión
                 </button>
+
             </form>
+
             <p>Esencia &amp; Aroma</p>
             <span>Sistema de gestión comercial</span>
+
         </div>
+
     </aside>
 
     <main class="contenido">
+
         <section class="bienvenida">
+
             <a th:href="@{/panel}" class="volver-panel">
                 ← Volver al panel
             </a>
+
             <h1>Cobranzas y Reportes</h1>
-            <p>Controla los pagos y saldos de las ventas al crédito.</p>
+
+            <p>
+                Controla los pagos y saldos de las ventas al crédito.
+            </p>
+
         </section>
 
         <section class="seccion-modulos">
 
+            <!-- ENCABEZADO Y ACCESOS -->
+
             <div class="inventario-cabecera">
+
                 <div>
                     <h2>Control de cobranzas</h2>
+
                     <p class="descripcion">
                         Seguimiento de los créditos otorgados.
                     </p>
                 </div>
 
-                <a th:href="@{/cobranzas/reportes}"
-                   class="btn-primario">
-                    Ver reportes
-                </a>
+                <div class="botones-inventario">
+
+                    <a th:href="@{/cobranzas/cuentas-por-cobrar}"
+                       class="btn-primario">
+                        Cuentas por cobrar
+                    </a>
+
+                    <a th:href="@{/cobranzas/auditoria}"
+                       class="btn-secundario">
+                        Auditoría
+                    </a>
+
+                    <a th:href="@{/cobranzas/medios-pago}"
+                       class="btn-secundario">
+                        Medios de pago
+                    </a>
+
+                    <a th:href="@{/cobranzas/reportes}"
+                       class="btn-secundario">
+                        Reportes comerciales
+                    </a>
+
+
+                    <a th:href="@{/cobranzas/recordatorios}"
+                       class="btn-secundario">
+                        Recordatorios de pago
+                    </a>
+
+                    <a th:href="@{/cobranzas/estadisticas}"
+                       class="btn-secundario">
+                        Estadísticas financieras
+                    </a>
+
+                    <a th:href="@{/cobranzas/exportar}"
+                       class="btn-secundario">
+                        Exportar cobranzas
+                    </a>
+
+                </div>
+
             </div>
+
+            <!-- MENSAJES -->
 
             <div class="alerta-exito"
-                 th:if="${mensaje}" th:text="${mensaje}">
+                 th:if="${mensaje}"
+                 th:text="${mensaje}">
             </div>
 
+            <!-- RESUMEN -->
+
             <div class="ea-resumen">
+
                 <div class="ea-tarjeta">
                     <span>Ventas al crédito</span>
-                    <strong th:text="${#lists.size(creditos)}">0</strong>
+                    <strong th:text="${#lists.size(creditos)}">
+                        0
+                    </strong>
                 </div>
 
                 <div class="ea-tarjeta">
@@ -79,20 +145,27 @@
                         S/ 0.00
                     </strong>
                 </div>
+
             </div>
 
+            <!-- CRÉDITOS REGISTRADOS -->
+
             <div class="ea-bloque">
+
                 <h2>Créditos registrados</h2>
 
                 <div class="estado-vacio"
                      th:if="${#lists.isEmpty(creditos)}">
+
                     Todavía no hay ventas al crédito.
+
                 </div>
 
                 <div class="tabla-contenedor"
                      th:unless="${#lists.isEmpty(creditos)}">
 
                     <table class="tabla-productos">
+
                         <thead>
                         <tr>
                             <th>Fecha</th>
@@ -107,9 +180,12 @@
                         </thead>
 
                         <tbody>
+
                         <tr th:each="v : ${creditos}">
 
-                            <td th:text="${#temporals.format(v.fechaRegistro, 'dd/MM/yyyy')}">
+                            <td th:text="${#temporals.format(
+                                v.fechaRegistro,
+                                'dd/MM/yyyy')}">
                             </td>
 
                             <td th:text="${v.cliente.nombre}"></td>
@@ -125,6 +201,7 @@
                             <td th:text="${v.estadoPago}"></td>
 
                             <td>
+
                                 <a th:if="${v.estadoPago == 'PENDIENTE'}"
                                    th:href="@{/cobranzas/abonar/{id}(id=${v.id})}"
                                    class="ea-enlace">
@@ -134,20 +211,28 @@
                                 <span th:if="${v.estadoPago == 'PAGADO'}">
                                     Cancelado
                                 </span>
+
                             </td>
 
                         </tr>
+
                         </tbody>
+
                     </table>
+
                 </div>
+
             </div>
 
         </section>
+
     </main>
+
 </div>
 
 <footer class="app-footer">
     Esencia &amp; Aroma © 2026 - Sistema de Gestión Comercial
 </footer>
+
 </body>
 </html>

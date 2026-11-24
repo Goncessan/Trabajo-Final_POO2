@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
-    <title>Esencia & Aroma | Nuevo producto</title>
+    <title>Esencia & Aroma | Producto</title>
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
 </head>
 
@@ -58,13 +58,11 @@
                 ← Volver al inventario
             </a>
 
-
             <h1 th:text="${producto.id == null}
                 ? 'Registrar nuevo producto'
-                 : 'Editar producto'">
+                : 'Editar producto'">
                 Registrar nuevo producto
             </h1>
-
 
             <p>
                 Completa la información del producto
@@ -75,7 +73,6 @@
 
         <section class="seccion-modulos">
 
-
             <form class="formulario-producto"
                   th:action="${producto.id == null}
                   ? @{/inventario/nuevo}
@@ -84,6 +81,8 @@
                   method="post">
 
                 <div class="grid-formulario">
+
+                    <!-- CÓDIGO -->
 
                     <div class="campo-formulario">
 
@@ -102,9 +101,13 @@
                         </small>
                     </div>
 
+                    <!-- NOMBRE -->
+
                     <div class="campo-formulario">
 
-                        <label for="nombre">Nombre del producto *</label>
+                        <label for="nombre">
+                            Nombre del producto *
+                        </label>
 
                         <input id="nombre"
                                type="text"
@@ -119,6 +122,8 @@
                         </small>
                     </div>
 
+                    <!-- MARCA -->
+
                     <div class="campo-formulario">
 
                         <label for="marca">Marca *</label>
@@ -127,7 +132,9 @@
                                 th:field="*{marca}"
                                 required>
 
-                            <option value="">Seleccionar marca</option>
+                            <option value="">
+                                Seleccionar marca
+                            </option>
 
                             <option th:each="marca : ${marcas}"
                                     th:value="${marca.name()}"
@@ -142,26 +149,51 @@
                         </small>
                     </div>
 
+                    <!-- CATEGORÍA -->
+
                     <div class="campo-formulario">
 
-                        <label for="categoria">Categoría *</label>
+                        <label for="categoria">
+                            Categoría *
+                        </label>
 
-                        <input id="categoria"
-                               type="text"
-                               th:field="*{categoria}"
-                               maxlength="60"
-                               placeholder="Ej. Perfumería"
-                               required>
+                        <select id="categoria"
+                                th:field="*{categoria}"
+                                required>
+
+                            <option value="">
+                                Seleccionar categoría
+                            </option>
+
+                            <option th:each="categoriaItem : ${categoriasDisponibles}"
+                                    th:value="${categoriaItem}"
+                                    th:text="${categoriaItem}">
+                            </option>
+
+                        </select>
 
                         <small class="mensaje-error"
                                th:if="${#fields.hasErrors('categoria')}"
                                th:errors="*{categoria}">
                         </small>
+
+                        <small class="ayuda-stock">
+                            ¿No encuentras la categoría?
+                            <a th:href="@{/inventario/categorias}"
+                               style="color:#d94b86;font-weight:600">
+                                Administrar categorías
+                            </a>
+                        </small>
+
                     </div>
+
+                    <!-- PRECIO DE COMPRA -->
 
                     <div class="campo-formulario">
 
-                        <label for="precioCompra">Precio de compra (S/) *</label>
+                        <label for="precioCompra">
+                            Precio de compra (S/) *
+                        </label>
 
                         <input id="precioCompra"
                                type="number"
@@ -176,9 +208,13 @@
                         </small>
                     </div>
 
+                    <!-- PRECIO DE VENTA -->
+
                     <div class="campo-formulario">
 
-                        <label for="precioVenta">Precio de venta (S/) *</label>
+                        <label for="precioVenta">
+                            Precio de venta (S/) *
+                        </label>
 
                         <input id="precioVenta"
                                type="number"
@@ -193,9 +229,13 @@
                         </small>
                     </div>
 
+                    <!-- STOCK INICIAL -->
+
                     <div class="campo-formulario">
 
-                        <label for="stock">Stock inicial *</label>
+                        <label for="stock">
+                            Stock inicial *
+                        </label>
 
                         <input id="stock"
                                type="number"
@@ -207,8 +247,10 @@
 
                         <small class="ayuda-stock"
                                th:if="${producto.id != null}">
+
                             Para modificar las existencias, utiliza
                             la opción Registrar movimiento.
+
                         </small>
 
                         <small class="mensaje-error"
@@ -217,9 +259,13 @@
                         </small>
                     </div>
 
+                    <!-- STOCK MÍNIMO -->
+
                     <div class="campo-formulario">
 
-                        <label for="stockMinimo">Stock mínimo *</label>
+                        <label for="stockMinimo">
+                            Stock mínimo *
+                        </label>
 
                         <input id="stockMinimo"
                                type="number"
@@ -248,7 +294,7 @@
                             th:text="${producto.id == null}
                             ? 'Guardar producto'
                             : 'Guardar cambios'">
-                           Guardar producto
+                        Guardar producto
                     </button>
 
                 </div>
@@ -258,6 +304,7 @@
         </section>
 
     </main>
+
 </div>
 
 <footer class="app-footer">

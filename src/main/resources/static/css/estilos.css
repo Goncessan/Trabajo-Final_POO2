@@ -920,7 +920,6 @@ button, input {
     }
 }
 
-
 /* =========================================
    MODULO 2 - ABASTECIMIENTO
 ========================================= */
@@ -1296,4 +1295,257 @@ button, input {
     .ea-bloque {
         padding: 18px;
     }
+}
+
+/* =====================================
+   MENU DE OPCIONES - INVENTARIO
+   ===================================== */
+
+.inventario-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.botones-inventario {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.inventario-menu-opciones {
+    position: relative;
+    z-index: 30;
+}
+
+/* BOTON PRINCIPAL DEL MENU */
+
+.inventario-menu-boton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 360px;
+    height: 56px;
+    padding: 0 20px;
+
+    box-sizing: border-box;
+    background: #ffffff;
+    color: #39343a;
+
+    border: 1px solid #ead8e0;
+    border-radius: 13px;
+
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+
+    transition: all 0.2s ease;
+}
+
+.inventario-menu-boton::-webkit-details-marker {
+    display: none;
+}
+
+.inventario-menu-boton:hover {
+    border-color: #df8fb1;
+    background: #fff8fb;
+}
+
+/* ICONO Y TEXTO IZQUIERDO */
+
+.inventario-menu-izquierda {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.inventario-menu-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 19px;
+    line-height: 1;
+    color: #3b3640;
+}
+
+.inventario-menu-texto {
+    font-size: 15px;
+    font-weight: 600;
+    color: #39343a;
+    line-height: 1;
+}
+
+/* FLECHA ALINEADA A LA DERECHA */
+
+.inventario-flecha {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+
+    font-size: 0;
+    line-height: 0;
+    color: #39343a;
+}
+
+.inventario-flecha::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+}
+
+.inventario-menu-opciones[open]
+.inventario-flecha::before {
+    transform: rotate(225deg);
+}
+
+/* MENU DESPLEGABLE */
+
+.inventario-menu-lista {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+
+    width: 320px;
+    padding: 10px;
+
+    background: #ffffff;
+    border: 1px solid #eadde3;
+    border-radius: 13px;
+
+    box-shadow: 0 10px 30px
+                rgba(56, 34, 44, 0.12);
+
+    z-index: 100;
+    box-sizing: border-box;
+}
+
+.inventario-menu-lista a {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 13px 14px;
+    border-radius: 9px;
+
+    color: #494149;
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: background 0.2s ease;
+}
+
+.inventario-menu-lista a span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 20px;
+    flex-shrink: 0;
+
+    color: #d14b83;
+    font-size: 17px;
+}
+
+.inventario-menu-lista a:hover {
+    background: #fceaf2;
+    color: #b83271;
+}
+
+.inventario-menu-separador {
+    height: 1px;
+    background: #f0e5eb;
+    margin: 7px 9px;
+}
+
+/* BOTON NUEVO PRODUCTO */
+
+.inventario-boton-nuevo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 56px;
+    padding: 0 24px;
+
+    border-radius: 13px;
+    white-space: nowrap;
+}
+
+/* DISEÑO RESPONSIVE */
+
+@media (max-width: 768px) {
+
+    .inventario-cabecera {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .botones-inventario {
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .inventario-menu-boton {
+        width: min(360px, calc(100vw - 40px));
+    }
+
+    .inventario-menu-lista {
+        width: min(320px, calc(100vw - 40px));
+    }
+}
+
+
+/* =====================================
+   ICONOS SVG - MENU INVENTARIO
+   ===================================== */
+
+/* Icono del boton principal */
+
+.inventario-menu-icono svg {
+    width: 21px;
+    height: 21px;
+    display: block;
+}
+
+/* Iconos de las opciones */
+
+.inventario-menu-lista a svg {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+
+    fill: none;
+    stroke: #df4f88;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    flex-shrink: 0;
+}
+
+/* Efecto al pasar el cursor */
+
+.inventario-menu-lista a:hover svg {
+    stroke: #c83d75;
 }

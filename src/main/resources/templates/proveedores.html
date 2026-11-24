@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Proveedores</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}" class="activo">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post" class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">Cerrar sesión</button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+            <a th:href="@{/abastecimiento}" class="volver-panel">
+                ← Volver a Abastecimiento
+            </a>
+            <h1>Gestión de proveedores</h1>
+            <p>Administra los proveedores que abastecen el negocio.</p>
+        </section>
+
+        <section class="seccion-modulos">
+
+            <div class="inventario-cabecera">
+                <div>
+                    <h2>Proveedores registrados</h2>
+                    <p class="descripcion">Consulta los proveedores activos.</p>
+                </div>
+                <a th:href="@{/abastecimiento/proveedores/nuevo}"
+                   class="btn-primario">
+                    + Nuevo proveedor
+                </a>
+            </div>
+
+            <div class="alerta-exito"
+                 th:if="${mensaje}" th:text="${mensaje}">
+            </div>
+
+            <div class="estado-vacio"
+                 th:if="${#lists.isEmpty(proveedores)}">
+                Todavía no hay proveedores registrados.
+            </div>
+
+            <div class="tabla-contenedor"
+                 th:unless="${#lists.isEmpty(proveedores)}">
+
+                <table class="tabla-productos">
+                    <thead>
+                    <tr>
+                        <th>Proveedor</th>
+                        <th>Tipo</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Dirección</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="p : ${proveedores}">
+                        <td th:text="${p.nombre}"></td>
+                        <td th:text="${p.tipoProveedor}"></td>
+                        <td th:text="${p.telefono}"></td>
+                        <td th:text="${p.correo}"></td>
+                        <td th:text="${p.direccion != null ? p.direccion : '-'}"></td>
+                        <td>
+                            <form th:action="@{/abastecimiento/proveedores/desactivar/{id}(id=${p.id})}"
+                                  method="post"
+                                  onsubmit="return confirm('¿Desactivar este proveedor?');">
+                                <button type="submit" class="boton-eliminar">
+                                    Desactivar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+    </main>
+</div>
+
+<footer class="app-footer">Esencia &amp; Aroma © 2026</footer>
+</body>
+</html>

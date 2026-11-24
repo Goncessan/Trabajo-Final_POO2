@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Esencia & Aroma | Auditoría</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit"
+                        class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+        </div>
+
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/inventario}"
+               class="volver-panel">
+                ← Volver a Inventario
+            </a>
+
+            <h1>Auditoría de inventario</h1>
+
+            <p>
+                Consulta las operaciones realizadas
+                y el historial de actividades del inventario.
+            </p>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <h2>Historial de operaciones</h2>
+
+            <div class="tabla-contenedor">
+
+                <table class="tabla-productos">
+
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Usuario</th>
+                        <th>Acción</th>
+                        <th>Producto</th>
+                        <th>Descripción</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="registro : ${registros}">
+
+                        <td th:text="${#temporals.format(
+                            registro.fechaRegistro,
+                            'dd/MM/yyyy HH:mm')}">
+                        </td>
+
+                        <td th:text="${registro.usuario}"></td>
+
+                        <td th:text="${registro.accion}"></td>
+
+                        <td th:text="${registro.codigoProducto != null
+                            ? registro.codigoProducto : '-'}">
+                        </td>
+
+                        <td th:text="${registro.descripcion}"></td>
+
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(registros)}">
+                        <td colspan="5">
+                            Todavía no existen operaciones registradas.
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>

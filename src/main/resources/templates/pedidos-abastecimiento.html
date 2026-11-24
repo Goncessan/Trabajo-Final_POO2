@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Pedidos</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}" class="activo">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post" class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">Cerrar sesión</button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+            <a th:href="@{/abastecimiento}" class="volver-panel">
+                ← Volver a Abastecimiento
+            </a>
+            <h1>Pedidos de abastecimiento</h1>
+            <p>Consulta los pedidos realizados a los proveedores.</p>
+        </section>
+
+        <section class="seccion-modulos">
+
+            <div class="inventario-cabecera">
+                <div>
+                    <h2>Pedidos registrados</h2>
+                    <p class="descripcion">Seguimiento de productos solicitados.</p>
+                </div>
+
+                <a th:href="@{/abastecimiento/pedidos/nuevo}"
+                   class="btn-primario">
+                    + Nuevo pedido
+                </a>
+            </div>
+
+            <div class="alerta-exito"
+                 th:if="${mensaje}" th:text="${mensaje}">
+            </div>
+
+            <div class="estado-vacio"
+                 th:if="${#lists.isEmpty(pedidos)}">
+                Todavía no hay pedidos registrados.
+            </div>
+
+            <div class="tabla-contenedor"
+                 th:unless="${#lists.isEmpty(pedidos)}">
+
+                <table class="tabla-productos">
+                    <thead>
+                    <tr>
+                        <th>N.º</th>
+                        <th>Fecha</th>
+                        <th>Proveedor</th>
+                        <th>Campaña</th>
+                        <th>Prioridad</th>
+                        <th>Estado</th>
+                        <th>Productos</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="p : ${pedidos}">
+                        <td th:text="${p.id}"></td>
+                        <td th:text="${#temporals.format(p.fechaPedido, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${p.proveedor.nombre}"></td>
+                        <td th:text="${p.campania.nombre}"></td>
+                        <td th:text="${p.prioridad}"></td>
+                        <td th:text="${p.estado}"></td>
+                        <td>
+                            <details>
+                                <summary>Ver detalle</summary>
+                                <ul>
+                                    <li th:each="d : ${p.detalles}">
+                                        <span th:text="${d.producto.nombre}"></span>
+                                        · Cantidad:
+                                        <strong th:text="${d.cantidad}"></strong>
+                                        · Precio:
+                                        <strong th:text="|S/ ${d.precioUnitario}|"></strong>
+                                    </li>
+                                </ul>
+                            </details>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+    </main>
+</div>
+
+<footer class="app-footer">Esencia &amp; Aroma © 2026</footer>
+</body>
+</html>

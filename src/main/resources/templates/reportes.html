@@ -47,6 +47,56 @@
             <p>Resumen general de ventas, pagos y saldos.</p>
         </section>
 
+        <div class="ea-acciones">
+
+            <a th:href="@{/cobranzas}"
+               class="btn-secundario">
+                Volver a cobranzas
+            </a>
+
+            <a th:href="@{/cobranzas/auditoria}"
+               class="btn-primario">
+                Auditoría de cobranzas
+            </a>
+
+        </div>
+
+
+        <!-- NAVEGACIÓN ENTRE REPORTES -->
+
+        <section class="seccion-modulos">
+
+            <div style="display:flex;
+                align-items:center;
+                justify-content:space-between;
+                gap:16px;
+                flex-wrap:wrap;">
+
+                <div>
+                    <h2>Consultar reportes</h2>
+
+                    <p class="descripcion">
+                        Selecciona el reporte que deseas visualizar.
+                    </p>
+                </div>
+
+                <div style="display:flex;
+                    gap:12px;
+                    flex-wrap:wrap;">
+
+                    <a th:href="@{/cobranzas/reportes}"
+                       class="btn-secundario">
+                        Reportes comerciales
+                    </a>
+
+                    <a th:href="@{/cobranzas/medios-pago}"
+                       class="btn-primario">
+                        Reporte por medios de pago
+                    </a>
+            </div>
+
+        </section>
+
         <section class="seccion-modulos">
 
             <div class="ea-resumen">

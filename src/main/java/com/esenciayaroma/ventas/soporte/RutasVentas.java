@@ -20,7 +20,7 @@ public final class RutasVentas {
     public static final String VISTA_PEDIDOS = "pedidos-clientes";
     public static final String VISTA_VENTA = "venta-form";
     public static final String VISTA_HISTORIAL = "ventas-historial";
-    public static final String VISTA_ALERTAS = "alertas-stock";
+    public static final String VISTA_ALERTAS = "alertas-stock-ventas";
 
     // Redirecciones
     public static final String REDIRIGIR_CLIENTES = "redirect:/ventas/clientes";

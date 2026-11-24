@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Esencia & Aroma | Categorías</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit"
+                        class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+        </div>
+
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/inventario}"
+               class="volver-panel">
+                ← Volver a Inventario
+            </a>
+
+            <h1>Gestión de categorías</h1>
+
+            <p>
+                Organiza los productos de Esencia & Aroma
+                mediante categorías.
+            </p>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <div th:if="${mensaje}"
+                 class="alerta-exito"
+                 th:text="${mensaje}">
+            </div>
+
+            <div th:if="${error}"
+                 class="alerta-error"
+                 th:text="${error}">
+            </div>
+
+            <div class="formulario-producto">
+
+                <h2 th:text="${categoria.id == null
+                    ? 'Registrar categoría'
+                    : 'Editar categoría'}">
+                </h2>
+
+                <form th:action="@{/inventario/categorias/guardar}"
+                      th:object="${categoria}"
+                      method="post">
+
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="campo-formulario">
+
+                        <label>Nombre de la categoría</label>
+
+                        <input type="text"
+                               th:field="*{nombre}"
+                               maxlength="80"
+                               placeholder="Ej. Perfumes"
+                               required>
+
+                        <small th:if="${#fields.hasErrors('nombre')}"
+                               th:errors="*{nombre}"
+                               style="color:#c83d75">
+                        </small>
+
+                    </div>
+
+                    <div class="campo-formulario">
+
+                        <label>Descripción</label>
+
+                        <input type="text"
+                               th:field="*{descripcion}"
+                               maxlength="250"
+                               placeholder="Ej. Fragancias para mujer y hombre">
+
+                    </div>
+
+                    <div class="botones-formulario">
+
+                        <a th:href="@{/inventario/categorias}"
+                           class="btn-secundario">
+                            Cancelar
+                        </a>
+
+                        <button type="submit"
+                                class="btn-primario">
+                            Guardar categoría
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div style="margin-top:30px">
+
+                <h2>Categorías registradas</h2>
+
+                <div class="tabla-contenedor">
+
+                    <table class="tabla-productos">
+
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="item : ${categorias}">
+
+                            <td th:text="${item.nombre}"></td>
+
+                            <td th:text="${item.descripcion}"></td>
+
+                            <td>
+
+                                <a th:href="@{/inventario/categorias/editar/{id}(id=${item.id})}"
+                                   class="enlace-editar">
+                                    Editar
+                                </a>
+
+                                <form th:action="@{/inventario/categorias/eliminar/{id}(id=${item.id})}"
+                                      method="post"
+                                      style="display:inline"
+                                      onsubmit="return confirm('¿Eliminar esta categoría?');">
+
+                                    <button type="submit"
+                                            style="background:none;border:none;color:#d94b86;cursor:pointer;font:inherit;margin-left:12px">
+                                        Eliminar
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(categorias)}">
+
+                            <td colspan="3">
+                                Aún no hay categorías registradas.
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>

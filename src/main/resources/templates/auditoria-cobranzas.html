@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Auditoría de cobranzas</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}" class="activo">
+                Cobranzas y Reportes
+            </a>
+        </nav>
+
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post"
+                  class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/cobranzas}" class="volver-panel">
+                ← Volver a Cobranzas
+            </a>
+
+            <h1>Auditoría de cobranzas</h1>
+
+            <p>
+                Historial de abonos registrados y sus responsables.
+            </p>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <!-- RESUMEN GENERAL -->
+
+            <div class="ea-resumen">
+
+                <div class="ea-tarjeta">
+                    <span>Operaciones registradas</span>
+                    <strong th:text="${resumen.totalOperaciones}">
+                        0
+                    </strong>
+                </div>
+
+                <div class="ea-tarjeta">
+                    <span>Importe registrado</span>
+                    <strong th:text="|S/ ${resumen.totalRegistrado}|">
+                        S/ 0.00
+                    </strong>
+                </div>
+
+                <div class="ea-tarjeta">
+                    <span>Operaciones digitales</span>
+                    <strong th:text="${resumen.pagosDigitales}">
+                        0
+                    </strong>
+                </div>
+
+            </div>
+
+            <!-- FILTROS -->
+
+            <div class="ea-bloque">
+
+                <h2>Buscar operaciones</h2>
+
+                <p class="descripcion">
+                    Filtra los registros según fecha, usuario,
+                    medio de pago o número de venta.
+                </p>
+
+                <form class="filtros-inventario"
+                      th:action="@{/cobranzas/auditoria}"
+                      method="get">
+
+                    <div class="filtro-campo">
+
+                        <label for="desde">Desde</label>
+
+                        <input type="date"
+                               id="desde"
+                               name="desde"
+                               th:value="${desde}">
+
+                    </div>
+
+                    <div class="filtro-campo">
+
+                        <label for="hasta">Hasta</label>
+
+                        <input type="date"
+                               id="hasta"
+                               name="hasta"
+                               th:value="${hasta}">
+
+                    </div>
+
+                    <div class="filtro-campo">
+
+                        <label for="usuario">Usuario</label>
+
+                        <input type="text"
+                               id="usuario"
+                               name="usuario"
+                               placeholder="Nombre de usuario"
+                               th:value="${usuario}">
+
+                    </div>
+
+                    <div class="filtro-campo">
+
+                        <label for="medioPago">Medio de pago</label>
+
+                        <select id="medioPago" name="medioPago">
+
+                            <option value="">
+                                Todos los medios
+                            </option>
+
+                            <option value="YAPE"
+                                    th:selected="${medioPago == 'YAPE'}">
+                                Yape
+                            </option>
+
+                            <option value="PLIN"
+                                    th:selected="${medioPago == 'PLIN'}">
+                                Plin
+                            </option>
+
+                            <option value="EFECTIVO"
+                                    th:selected="${medioPago == 'EFECTIVO'}">
+                                Efectivo
+                            </option>
+
+                            <option value="TRANSFERENCIA"
+                                    th:selected="${medioPago == 'TRANSFERENCIA'}">
+                                Transferencia
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="filtro-campo">
+
+                        <label for="ventaId">N.º de venta</label>
+
+                        <input type="number"
+                               id="ventaId"
+                               name="ventaId"
+                               min="1"
+                               placeholder="Ej. 1"
+                               th:value="${ventaId}">
+
+                    </div>
+
+                    <button type="submit"
+                            class="btn-primario">
+                        Buscar
+                    </button>
+
+                    <a th:href="@{/cobranzas/auditoria}"
+                       class="btn-secundario">
+                        Limpiar
+                    </a>
+
+                </form>
+
+            </div>
+
+            <!-- HISTORIAL -->
+
+            <div class="ea-bloque">
+
+                <h2>Historial de operaciones</h2>
+
+                <p class="descripcion">
+                    Resultados encontrados:
+                    <strong th:text="${#lists.size(registros)}">
+                        0
+                    </strong>
+                </p>
+
+                <div class="tabla-contenedor">
+
+                    <table class="tabla-productos">
+
+                        <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Usuario</th>
+                            <th>Acción</th>
+                            <th>Venta</th>
+                            <th>Importe</th>
+                            <th>Medio</th>
+                            <th>Referencia</th>
+                            <th>Comprobante</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="a : ${registros}">
+
+                            <td th:text="${#temporals.format(
+                                a.fechaRegistro,
+                                'dd/MM/yyyy HH:mm')}">
+                            </td>
+
+                            <td th:text="${a.usuario}"></td>
+
+                            <td th:text="${a.accion}"></td>
+
+                            <td th:text="${a.ventaId}"></td>
+
+                            <td th:text="|S/ ${a.monto}|"></td>
+
+                            <td th:text="${a.medioPago != null
+                                ? a.medioPago.nombre : '-'}">
+                            </td>
+
+                            <td th:text="${a.referencia != null
+                                && !a.referencia.isBlank()
+                                ? a.referencia : '-'}">
+                            </td>
+
+                            <td>
+
+                                <a th:if="${a.abonoId != null}"
+                                   th:href="@{/cobranzas/comprobantes/{id}(id=${a.abonoId})}"
+                                   class="enlace-editar">
+                                    Ver
+                                </a>
+
+                                <span th:if="${a.abonoId == null}">
+                                    -
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(registros)}">
+
+                            <td colspan="8">
+                                No se encontraron operaciones
+                                con los filtros seleccionados.
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>

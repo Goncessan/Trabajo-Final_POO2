@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Esencia & Aroma | Reporte de diferencias</title>
+
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+
+    <style>
+        .resumen-diferencias {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .tarjeta-diferencia {
+            background: #fff;
+            border: 1px solid #f0e4e9;
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .tarjeta-diferencia p {
+            margin: 0 0 10px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .tarjeta-diferencia strong {
+            font-size: 28px;
+            color: #25232a;
+        }
+
+        .detalle-reporte {
+            margin: 20px 0;
+            color: #555;
+            line-height: 1.9;
+        }
+
+        .positivo {
+            color: #14845e;
+            font-weight: 600;
+        }
+
+        .negativo {
+            color: #ca4267;
+            font-weight: 600;
+        }
+
+        .acciones-reporte {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        @media print {
+            .menu-lateral,
+            .encabezado,
+            .app-footer,
+            .acciones-reporte,
+            .volver-panel {
+                display: none !important;
+            }
+
+            .panel-principal {
+                display: block;
+            }
+
+            .contenido {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        }
+    </style>
+
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+
+    <div class="logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+
+    <div class="accesos">Administración</div>
+
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+
+        <div class="menu-inferior">
+
+            <form th:action="@{/logout}" method="post">
+
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/inventario/conteos/{id}(id=${reporte.conteoId})}"
+               class="volver-panel">
+                ← Volver al conteo
+            </a>
+
+            <h1>Reporte de diferencias de inventario</h1>
+
+            <p>
+                Resumen de las diferencias detectadas
+                durante la verificación física de existencias.
+            </p>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <h2 th:text="'Conteo N.º ' + ${reporte.conteoId}">
+                Conteo
+            </h2>
+
+            <div class="detalle-reporte">
+
+                <div>
+                    <strong>Fecha:</strong>
+                    <span th:text="${#temporals.format(
+                        reporte.fechaConteo,
+                        'dd/MM/yyyy HH:mm')}"></span>
+                </div>
+
+                <div>
+                    <strong>Usuario:</strong>
+                    <span th:text="${reporte.usuario}"></span>
+                </div>
+
+                <div>
+                    <strong>Modalidad:</strong>
+                    <span th:text="${reporte.modalidad}"></span>
+                </div>
+
+                <div>
+                    <strong>Estado:</strong>
+                    <span th:text="${reporte.estado}"></span>
+                </div>
+
+            </div>
+
+            <div class="resumen-diferencias">
+
+                <div class="tarjeta-diferencia">
+                    <p>Productos revisados</p>
+                    <strong th:text="${reporte.totalProductos}">0</strong>
+                </div>
+
+                <div class="tarjeta-diferencia">
+                    <p>Productos con faltantes</p>
+                    <strong th:text="${reporte.productosFaltantes}">0</strong>
+                </div>
+
+                <div class="tarjeta-diferencia">
+                    <p>Productos con sobrantes</p>
+                    <strong th:text="${reporte.productosSobrantes}">0</strong>
+                </div>
+
+                <div class="tarjeta-diferencia">
+                    <p>Productos sin diferencias</p>
+                    <strong th:text="${reporte.productosCoincidentes}">0</strong>
+                </div>
+
+                <div class="tarjeta-diferencia">
+                    <p>Unidades faltantes</p>
+                    <strong class="negativo"
+                            th:text="${reporte.unidadesFaltantes}">
+                        0
+                    </strong>
+                </div>
+
+                <div class="tarjeta-diferencia">
+                    <p>Unidades sobrantes</p>
+                    <strong class="positivo"
+                            th:text="${reporte.unidadesSobrantes}">
+                        0
+                    </strong>
+                </div>
+
+            </div>
+
+            <h2>Detalle de productos revisados</h2>
+
+            <div class="tabla-contenedor">
+
+                <table class="tabla-productos">
+
+                    <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Stock sistema</th>
+                        <th>Stock físico</th>
+                        <th>Diferencia</th>
+                        <th>Resultado</th>
+                        <th>Ajuste</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="linea : ${reporte.lineas}">
+
+                        <td th:text="${linea.codigo}"></td>
+
+                        <td th:text="${linea.producto}"></td>
+
+                        <td th:text="${linea.stockSistema}"></td>
+
+                        <td th:text="${linea.stockFisico}"></td>
+
+                        <td th:text="${linea.diferencia > 0
+                            ? '+' + linea.diferencia
+                            : linea.diferencia}"
+                            th:classappend="${linea.diferencia > 0
+                            ? 'positivo'
+                            : (linea.diferencia < 0
+                            ? 'negativo' : '')}">
+                        </td>
+
+                        <td th:text="${linea.resultado}"></td>
+
+                        <td th:text="${linea.ajusteAplicado
+                            ? 'Procesado'
+                            : 'Pendiente'}">
+                        </td>
+
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(reporte.lineas)}">
+                        <td colspan="7">
+                            No hay detalles registrados.
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="acciones-reporte">
+
+                <a th:href="@{/inventario/conteos}"
+                   class="btn-secundario">
+                    Volver al historial
+                </a>
+
+                <button type="button"
+                        class="btn-primario"
+                        onclick="window.print()">
+                    Imprimir reporte
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>

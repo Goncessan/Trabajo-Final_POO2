@@ -1,0 +1,384 @@
+
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Esencia &amp; Aroma | Reporte de Inventario</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/estilos.css}">
+
+    <style>
+        .reporte-contenedor {
+            max-width: 1150px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .reporte-cabecera {
+            margin-bottom: 28px;
+        }
+
+        .reporte-cabecera h1 {
+            color: #b83271;
+            margin: 18px 0 8px;
+        }
+
+        .reporte-cabecera p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .reporte-fecha {
+            margin-top: 12px;
+            color: #777;
+            font-size: 13px;
+        }
+
+        .reporte-indicadores {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(190px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .reporte-tarjeta {
+            background: #fff;
+            border: 1px solid #f0d8e3;
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .reporte-tarjeta p {
+            color: #666;
+            font-size: 13px;
+            margin: 0 0 10px;
+        }
+
+        .reporte-tarjeta h2 {
+            color: #b83271;
+            margin: 0;
+            font-size: 24px;
+            overflow-wrap: anywhere;
+        }
+
+        .reporte-seccion {
+            margin-top: 25px;
+            background: white;
+            border: 1px solid #f0d8e3;
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .reporte-seccion h2 {
+            color: #823153;
+            margin: 0 0 10px;
+            font-size: 19px;
+        }
+
+        .reporte-seccion p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .reporte-tabla-contenedor {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .reporte-tabla {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .reporte-tabla th {
+            background: #fce8f1;
+            color: #823153;
+            text-align: left;
+            padding: 14px;
+        }
+
+        .reporte-tabla td {
+            padding: 14px;
+            border-bottom: 1px solid #f2e6ec;
+        }
+
+        .reporte-estado {
+            display: inline-block;
+            background: #fff0d9;
+            color: #975d00;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 20px;
+            padding: 6px 10px;
+        }
+
+        .reporte-acciones {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .reporte-nota {
+            color: #777;
+            font-size: 12px;
+            margin-top: 22px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+
+    <div class="logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+
+    <div class="accesos">
+        Administración
+    </div>
+
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+
+            <a th:href="@{/panel}">
+                Inicio
+            </a>
+
+            <a th:href="@{/inventario}"
+               class="activo">
+                Inventario
+            </a>
+
+            <a th:href="@{/abastecimiento}">
+                Abastecimiento
+            </a>
+
+            <a th:href="@{/ventas}">
+                Clientes y Ventas
+            </a>
+
+            <a th:href="@{/cobranzas}">
+                Cobranzas y Reportes
+            </a>
+
+        </nav>
+
+        <div class="menu-inferior">
+
+            <form th:action="@{/logout}"
+                  method="post"
+                  class="form-cerrar-sesion">
+
+                <button type="submit"
+                        class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+
+            </form>
+
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+
+        </div>
+
+    </aside>
+
+    <main class="contenido">
+
+        <section class="reporte-contenedor">
+
+            <div class="reporte-cabecera">
+
+                <a th:href="@{/inventario}"
+                   class="volver-panel">
+                    ← Volver a Inventario
+                </a>
+
+                <h1>Reporte general de inventario</h1>
+
+                <p>
+                    Consulta las existencias,
+                    el valor del inventario y los
+                    productos que requieren reposición.
+                </p>
+
+                <div class="reporte-fecha">
+                    Generado el:
+                    <strong th:text="${reporte.fechaFormateada}">
+                        23/11/2026 12:00
+                    </strong>
+                </div>
+
+                <div class="reporte-acciones">
+
+                    <a th:href="@{/inventario}"
+                       class="btn-secundario">
+                        Volver a productos
+                    </a>
+
+                    <a th:href="@{/inventario/valoracion}"
+                       class="btn-secundario">
+                        Ver valoración detallada
+                    </a>
+
+                    <a th:href="@{/inventario/alertas}"
+                       class="btn-secundario">
+                        Historial de alertas
+                    </a>
+
+                </div>
+
+            </div>
+
+            <!-- INDICADORES DEL REPORTE -->
+
+            <div class="reporte-indicadores">
+
+                <div class="reporte-tarjeta">
+                    <p>Productos registrados</p>
+                    <h2 th:text="${reporte.totalProductos}">
+                        0
+                    </h2>
+                </div>
+
+                <div class="reporte-tarjeta">
+                    <p>Unidades disponibles</p>
+                    <h2 th:text="${reporte.totalUnidades}">
+                        0
+                    </h2>
+                </div>
+
+                <div class="reporte-tarjeta">
+                    <p>Productos con stock bajo</p>
+                    <h2 th:text="${reporte.totalStockBajo}">
+                        0
+                    </h2>
+                </div>
+
+                <div class="reporte-tarjeta">
+                    <p>Valor al costo de compra</p>
+                    <h2>
+                        S/
+                        <span th:text="${reporte.valorCosto}">
+                            0.00
+                        </span>
+                    </h2>
+                </div>
+
+                <div class="reporte-tarjeta">
+                    <p>Valor al precio de venta</p>
+                    <h2>
+                        S/
+                        <span th:text="${reporte.valorVenta}">
+                            0.00
+                        </span>
+                    </h2>
+                </div>
+
+            </div>
+
+            <!-- PRODUCTOS CON STOCK BAJO -->
+
+            <div class="reporte-seccion">
+
+                <h2>Productos que requieren atención</h2>
+
+                <p>
+                    Se muestran los productos cuyas
+                    existencias son iguales o inferiores
+                    al stock mínimo establecido.
+                </p>
+
+                <div th:if="${#lists.isEmpty(reporte.productosBajoStock)}">
+                    <p>
+                        No se encontraron productos con stock bajo.
+                    </p>
+                </div>
+
+                <div class="reporte-tabla-contenedor"
+                     th:unless="${#lists.isEmpty(reporte.productosBajoStock)}">
+
+                    <table class="reporte-tabla">
+
+                        <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Marca</th>
+                            <th>Stock actual</th>
+                            <th>Stock mínimo</th>
+                            <th>Estado</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="producto : ${reporte.productosBajoStock}">
+
+                            <td th:text="${producto.codigo}">
+                            </td>
+
+                            <td th:text="${producto.nombre}">
+                            </td>
+
+                            <td th:text="${producto.marca.nombre}">
+                            </td>
+
+                            <td th:text="${producto.stock}">
+                            </td>
+
+                            <td th:text="${producto.stockMinimo}">
+                            </td>
+
+                            <td>
+                                <span class="reporte-estado">
+                                    Stock bajo
+                                </span>
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+
+            <p class="reporte-nota">
+                Los importes son estimaciones calculadas
+                a partir de los precios y existencias
+                registrados en Esencia &amp; Aroma.
+                No representan ganancias realizadas.
+            </p>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>

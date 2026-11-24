@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Esencia & Aroma | Medios de pago</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+
+    <style>
+        .resumen-pagos {
+            display: grid;
+            grid-template-columns: repeat(
+                    auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .tarjeta-pago {
+            background: white;
+            border: 1px solid #f0e4e9;
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .tarjeta-pago p {
+            margin: 0 0 12px;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .tarjeta-pago strong {
+            font-size: 24px;
+            color: #d94b86;
+        }
+
+        .tarjeta-pago small {
+            display: block;
+            margin-top: 8px;
+            color: #777;
+        }
+
+        @media print {
+            .encabezado, .menu-lateral,
+            .app-footer, .volver-panel {
+                display: none !important;
+            }
+
+            .panel-principal {
+                display: block;
+            }
+
+            .contenido {
+                width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit"
+                        class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+        </div>
+
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/cobranzas}" class="volver-panel">
+                ← Volver a Cobranzas
+            </a>
+
+            <h1>Reporte por medios de pago</h1>
+
+            <p>
+                Consulta los abonos de ventas al crédito
+                registrados por Yape, Plin, transferencia
+                y otros medios.
+            </p>
+
+
+            <div style="display:flex;
+            gap:12px;
+            flex-wrap:wrap;
+            margin-top:20px;">
+
+                <a th:href="@{/cobranzas/reportes}"
+                   class="btn-secundario">
+
+                    Ver reportes comerciales
+
+                </a>
+
+            </div>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <h2>Resumen de abonos</h2>
+
+            <div class="resumen-pagos">
+
+                <div class="tarjeta-pago">
+                    <p>Total de abonos recibidos</p>
+
+                    <strong th:text="'S/ ' + ${totalAbonos}">
+                        S/ 0.00
+                    </strong>
+                </div>
+
+                <div class="tarjeta-pago"
+                     th:each="item : ${resumen}">
+
+                    <p th:text="${item.nombre}">Yape</p>
+
+                    <strong
+                            th:text="'S/ ' + ${item.importeTotal}">
+                        S/ 0.00
+                    </strong>
+
+                    <small th:text="${item.cantidadOperaciones}
+                            + ' operación(es)'">
+                    </small>
+
+                </div>
+
+            </div>
+
+            <h2>Historial de pagos</h2>
+
+            <div class="tabla-contenedor">
+
+                <table class="tabla-productos">
+
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Venta</th>
+                        <th>Medio de pago</th>
+                        <th>Importe</th>
+                        <th>Referencia</th>
+                        <th>Observación</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="abono : ${pagos}">
+
+                        <td th:text="${#temporals.format(
+                                abono.fechaRegistro,
+                                'dd/MM/yyyy HH:mm')}">
+                        </td>
+
+                        <td th:text="${abono.venta.id}">
+                        </td>
+
+                        <td th:text="${abono.medioPago.nombre}">
+                        </td>
+
+                        <td th:text="'S/ ' + ${abono.monto}">
+                        </td>
+
+                        <td th:text="${abono.referenciaOperacion != null
+                                && !abono.referenciaOperacion.isBlank()
+                                ? abono.referenciaOperacion : '-'}">
+                        </td>
+
+                        <td th:text="${abono.observacion != null
+                                && !abono.observacion.isBlank()
+                                ? abono.observacion : '-'}">
+                        </td>
+
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(pagos)}">
+                        <td colspan="6">
+                            Todavía no existen abonos registrados.
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div style="display:flex;
+                        justify-content:flex-end;
+                        margin-top:20px;">
+
+                <button type="button"
+                        class="btn-primario"
+                        onclick="window.print()">
+
+                    Imprimir reporte
+
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>

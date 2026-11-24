@@ -40,6 +40,7 @@
         </nav>
 
         <div class="menu-inferior">
+
             <form th:action="@{/logout}"
                   method="post"
                   class="form-cerrar-sesion">
@@ -53,6 +54,7 @@
             <p>Esencia &amp; Aroma</p>
             <span>Sistema de gestión comercial</span>
         </div>
+
     </aside>
 
     <main class="contenido">
@@ -67,143 +69,301 @@
             <h1>Abastecimiento y Recepción de Pedidos</h1>
 
             <p>
-                Consulta las cajas recibidas por marca
-                y campaña, sus productos y faltantes.
+                Administra campañas, proveedores, pedidos,
+                órdenes de compra y recepción de productos.
             </p>
 
         </section>
 
         <section class="seccion-modulos">
 
-            <div class="inventario-cabecera">
+            <!-- ACCESOS PRINCIPALES -->
 
-                <div>
-                    <h2>Recepciones registradas</h2>
+            <div class="ea-bloque">
 
-                    <p class="descripcion">
-                        Control de productos solicitados
-                        y realmente recibidos.
-                    </p>
+                <h2>Gestión de abastecimiento</h2>
+
+                <p class="descripcion">
+                    Accede a las principales operaciones
+                    del proceso de abastecimiento.
+                </p>
+
+                <div class="ea-resumen">
+
+                    <!-- PROVEEDORES -->
+
+                    <div class="ea-tarjeta">
+
+                        <span>Gestión de abastecedores</span>
+
+                        <h3>Proveedores</h3>
+
+                        <p>
+                            Registra y consulta los proveedores
+                            que abastecen el negocio.
+                        </p>
+
+                        <div class="ea-acciones">
+
+                            <a th:href="@{/abastecimiento/proveedores}"
+                               class="btn-secundario">
+                                Ver proveedores
+                            </a>
+
+                            <a th:href="@{/abastecimiento/proveedores/nuevo}"
+                               class="btn-primario">
+                                + Nuevo proveedor
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CAMPAÑAS -->
+
+                    <div class="ea-tarjeta">
+
+                        <span>Planificación</span>
+
+                        <h3>Campañas</h3>
+
+                        <p>
+                            Organiza las campañas comerciales
+                            de las diferentes marcas.
+                        </p>
+
+                        <div class="ea-acciones">
+
+                            <a th:href="@{/abastecimiento/campanias}"
+                               class="btn-secundario">
+                                Ver campañas
+                            </a>
+
+                            <a th:href="@{/abastecimiento/campanias/nueva}"
+                               class="btn-primario">
+                                + Nueva campaña
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <!-- PEDIDOS -->
+
+                    <div class="ea-tarjeta">
+
+                        <span>Gestión de solicitudes</span>
+
+                        <h3>Pedidos de abastecimiento</h3>
+
+                        <p>
+                            Registra y consulta los pedidos
+                            realizados a los proveedores.
+                        </p>
+
+                        <div class="ea-acciones">
+
+                            <a th:href="@{/abastecimiento/pedidos}"
+                               class="btn-secundario">
+                                Ver pedidos
+                            </a>
+
+                            <a th:href="@{/abastecimiento/pedidos/nuevo}"
+                               class="btn-primario">
+                                + Nuevo pedido
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ORDENES DE COMPRA -->
+
+                    <div class="ea-tarjeta">
+
+                        <span>Adquisiciones</span>
+
+                        <h3>Órdenes de compra</h3>
+
+                        <p>
+                            Consulta y registra las órdenes
+                            de compra asociadas a los pedidos.
+                        </p>
+
+                        <div class="ea-acciones">
+
+                            <a th:href="@{/abastecimiento/ordenes}"
+                               class="btn-secundario">
+                                Ver órdenes
+                            </a>
+
+                            <a th:href="@{/abastecimiento/ordenes/nueva}"
+                               class="btn-primario">
+                                + Nueva orden
+                            </a>
+
+                        </div>
+
+                    </div>
+
                 </div>
-
-                <a th:href="@{/abastecimiento/nueva}"
-                   class="btn-primario">
-                    + Nueva recepción
-                </a>
-
-            </div>
-
-            <div class="alerta-exito"
-                 th:if="${mensaje}"
-                 th:text="${mensaje}">
-            </div>
-
-            <!-- MENSAJE CUANDO NO HAY RECEPCIONES -->
-            <div class="estado-vacio"
-                 th:if="${#lists.isEmpty(recepciones)}">
-
-                Todavía no hay recepciones registradas.
-                Cuando llegue una caja, podrás registrar
-                aquí lo solicitado y lo recibido.
 
             </div>
 
             <!-- RECEPCIONES -->
-            <div th:unless="${#lists.isEmpty(recepciones)}">
 
-                <details class="recepcion-tarjeta"
-                         th:each="r : ${recepciones}">
+            <div class="ea-bloque">
 
-                    <summary class="recepcion-resumen">
+                <div class="inventario-cabecera">
 
-                        <span class="recepcion-nombre">
-                            <strong th:text="${r.marca.nombre}">
-                                Marca
-                            </strong>
+                    <div>
 
-                            <span>
-                                · Campaña
-                                <strong th:text="${r.campania}">
-                                    12
-                                </strong>
-                            </span>
-                        </span>
+                        <h2>Recepciones registradas</h2>
 
-                        <span th:text="${#temporals.format(r.fechaRecepcion, 'dd/MM/yyyy')}">
-                        </span>
-
-                        <span class="recepcion-indicadores">
-                            <span>
-                                Solicitado:
-                                <strong th:text="${r.totalSolicitado}">0</strong>
-                            </span>
-
-                            <span>
-                                Recibido:
-                                <strong th:text="${r.totalRecibido}">0</strong>
-                            </span>
-
-                            <span>
-                                Faltante:
-                                <strong th:text="${r.totalFaltante}">0</strong>
-                            </span>
-                        </span>
-
-                        <span class="estado-recepcion"
-                              th:classappend="${r.totalFaltante > 0 ? 'con-faltantes' : 'recepcion-completa'}"
-                              th:text="${r.totalFaltante > 0 ? 'Con faltantes' : 'Completa'}">
-                        </span>
-
-                    </summary>
-
-                    <div class="tabla-contenedor">
-
-                        <table class="tabla-productos">
-
-                            <thead>
-                            <tr>
-                                <th>Código catálogo</th>
-                                <th>Código interno</th>
-                                <th>Producto</th>
-                                <th>Solicitado</th>
-                                <th>Recibido</th>
-                                <th>Faltante</th>
-                            </tr>
-                            </thead>
-
-                            <tbody>
-
-                            <tr th:each="d : ${r.detalles}">
-
-                                <td th:text="${d.codigoCatalogo}">
-                                </td>
-
-                                <td th:text="${d.producto.codigo}">
-                                </td>
-
-                                <td th:text="${d.producto.nombre}">
-                                </td>
-
-                                <td th:text="${d.cantidadSolicitada}">
-                                </td>
-
-                                <td th:text="${d.cantidadRecibida}">
-                                </td>
-
-                                <td>
-                                    <strong th:text="${d.cantidadFaltante}">
-                                    </strong>
-                                </td>
-
-                            </tr>
-
-                            </tbody>
-
-                        </table>
+                        <p class="descripcion">
+                            Control de productos solicitados
+                            y realmente recibidos.
+                        </p>
 
                     </div>
 
-                </details>
+                    <a th:href="@{/abastecimiento/nueva}"
+                       class="btn-primario">
+                        + Nueva recepción
+                    </a>
+
+                </div>
+
+                <div class="alerta-exito"
+                     th:if="${mensaje}"
+                     th:text="${mensaje}">
+                </div>
+
+                <div class="alerta-error"
+                     th:if="${error}"
+                     th:text="${error}">
+                </div>
+
+                <!-- SIN RECEPCIONES -->
+
+                <div class="estado-vacio"
+                     th:if="${#lists.isEmpty(recepciones)}">
+
+                    Todavía no hay recepciones registradas.
+                    Cuando llegue una caja, podrás registrar
+                    aquí lo solicitado y lo recibido.
+
+                </div>
+
+                <!-- RECEPCIONES REGISTRADAS -->
+
+                <div th:unless="${#lists.isEmpty(recepciones)}">
+
+                    <details class="recepcion-tarjeta"
+                             th:each="r : ${recepciones}">
+
+                        <summary class="recepcion-resumen">
+
+                            <span class="recepcion-nombre">
+
+                                <strong th:text="${r.marca.nombre}">
+                                    Marca
+                                </strong>
+
+                                <span>
+                                    · Campaña
+                                    <strong th:text="${r.campania}">
+                                        12
+                                    </strong>
+                                </span>
+
+                            </span>
+
+                            <span th:text="${#temporals.format(r.fechaRecepcion, 'dd/MM/yyyy')}">
+                            </span>
+
+                            <span class="recepcion-indicadores">
+
+                                <span>
+                                    Solicitado:
+                                    <strong th:text="${r.totalSolicitado}">
+                                        0
+                                    </strong>
+                                </span>
+
+                                <span>
+                                    Recibido:
+                                    <strong th:text="${r.totalRecibido}">
+                                        0
+                                    </strong>
+                                </span>
+
+                                <span>
+                                    Faltante:
+                                    <strong th:text="${r.totalFaltante}">
+                                        0
+                                    </strong>
+                                </span>
+
+                            </span>
+
+                            <span class="estado-recepcion"
+                                  th:classappend="${r.totalFaltante > 0 ? 'con-faltantes' : 'recepcion-completa'}"
+                                  th:text="${r.totalFaltante > 0 ? 'Con faltantes' : 'Completa'}">
+                            </span>
+
+                        </summary>
+
+                        <div class="tabla-contenedor">
+
+                            <table class="tabla-productos">
+
+                                <thead>
+                                <tr>
+                                    <th>Código catálogo</th>
+                                    <th>Código interno</th>
+                                    <th>Producto</th>
+                                    <th>Solicitado</th>
+                                    <th>Recibido</th>
+                                    <th>Faltante</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+
+                                <tr th:each="d : ${r.detalles}">
+
+                                    <td th:text="${d.codigoCatalogo}">
+                                    </td>
+
+                                    <td th:text="${d.producto.codigo}">
+                                    </td>
+
+                                    <td th:text="${d.producto.nombre}">
+                                    </td>
+
+                                    <td th:text="${d.cantidadSolicitada}">
+                                    </td>
+
+                                    <td th:text="${d.cantidadRecibida}">
+                                    </td>
+
+                                    <td>
+                                        <strong th:text="${d.cantidadFaltante}">
+                                        </strong>
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </details>
+
+                </div>
 
             </div>
 

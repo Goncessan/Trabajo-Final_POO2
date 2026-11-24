@@ -1,4 +1,3 @@
-
 package com.esenciayaroma.cobranzas;
 
 import org.jspecify.annotations.NullMarked;
@@ -13,4 +12,6 @@ public interface AbonoRepository
     List<Abono> findAllByVentaIdOrderByFechaRegistroDescIdDesc(
             Long ventaId
     );
+
+    List<Abono> findAllByOrderByFechaRegistroDescIdDesc();
 }

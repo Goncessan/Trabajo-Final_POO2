@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Estadísticas de cobranza</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}" class="activo">
+                Cobranzas y Reportes
+            </a>
+        </nav>
+
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post"
+                  class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+            <a th:href="@{/cobranzas}" class="volver-panel">
+                ← Volver a Cobranzas
+            </a>
+
+            <h1>Estadísticas financieras</h1>
+
+            <p>
+                Analiza los importes recibidos y el comportamiento
+                de los abonos registrados.
+            </p>
+        </section>
+
+        <section class="seccion-modulos">
+
+            <!-- RESUMEN GENERAL -->
+
+            <div class="ea-resumen">
+
+                <div class="ea-tarjeta">
+                    <span>Total cobrado en abonos</span>
+                    <strong th:text="|S/ ${estadistica.totalCobrado}|">
+                        S/ 0.00
+                    </strong>
+                </div>
+
+                <div class="ea-tarjeta">
+                    <span>Abonos registrados</span>
+                    <strong th:text="${estadistica.totalAbonos}">
+                        0
+                    </strong>
+                </div>
+
+            </div>
+
+            <!-- COMPORTAMIENTO DE LOS COBROS -->
+
+            <div class="ea-bloque">
+
+                <h2>Comportamiento de los cobros</h2>
+
+                <form th:action="@{/cobranzas/estadisticas}"
+                      method="get"
+                      class="filtros-inventario">
+
+                    <div class="filtro-campo">
+
+                        <label for="periodo">
+                            Agrupar información
+                        </label>
+
+                        <select id="periodo"
+                                name="periodo">
+
+                            <option value="diario"
+                                    th:selected="${periodo == 'diario'}">
+                                Por día
+                            </option>
+
+                            <option value="mensual"
+                                    th:selected="${periodo == 'mensual'}">
+                                Por mes
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <button type="submit" class="btn-primario">
+                        Consultar
+                    </button>
+
+                </form>
+
+                <div class="tabla-contenedor">
+
+                    <table class="tabla-productos">
+
+                        <thead>
+                        <tr>
+                            <th>Periodo</th>
+                            <th>Cantidad de abonos</th>
+                            <th>Importe recibido</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="p : ${estadistica.porPeriodo}">
+
+                            <td th:text="${p.periodo}"></td>
+
+                            <td th:text="${p.cantidad}"></td>
+
+                            <td th:text="|S/ ${p.total}|"></td>
+
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(estadistica.porPeriodo)}">
+                            <td colspan="3">
+                                Todavía no existen abonos registrados.
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <!-- EXPORTACIÓN DE REPORTES -->
+
+            <div class="ea-bloque">
+
+                <h2>Exportar información</h2>
+
+                <p class="descripcion">
+                    Descarga los abonos registrados durante un periodo
+                    determinado para su análisis y control.
+                </p>
+
+                <form th:action="@{/cobranzas/exportar}"
+                      method="get"
+                      class="filtros-inventario">
+
+                    <div class="filtro-campo">
+
+                        <label for="desde">
+                            Fecha inicial
+                        </label>
+
+                        <input type="date"
+                               id="desde"
+                               name="desde">
+
+                    </div>
+
+                    <div class="filtro-campo">
+
+                        <label for="hasta">
+                            Fecha final
+                        </label>
+
+                        <input type="date"
+                               id="hasta"
+                               name="hasta">
+
+                    </div>
+
+                    <button type="submit" class="btn-primario">
+                        Descargar CSV
+                    </button>
+
+                </form>
+
+                <p class="ea-nota">
+                    Si dejas las fechas vacías, se exportarán
+                    todos los abonos registrados.
+                </p>
+
+            </div>
+
+            <!-- DISTRIBUCIÓN POR MEDIO DE PAGO -->
+
+            <div class="ea-bloque">
+
+                <h2>Distribución por medio de pago</h2>
+
+                <div class="tabla-contenedor">
+
+                    <table class="tabla-productos">
+
+                        <thead>
+                        <tr>
+                            <th>Medio de pago</th>
+                            <th>Operaciones</th>
+                            <th>Importe acumulado</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="m : ${estadistica.porMedio}">
+
+                            <td th:text="${m.medio}"></td>
+
+                            <td th:text="${m.cantidad}"></td>
+
+                            <td th:text="|S/ ${m.total}|"></td>
+
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(estadistica.porMedio)}">
+                            <td colspan="3">
+                                No existen datos para mostrar.
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Nuevo conteo</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}" class="activo">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/inventario/conteos}" class="volver-panel">
+                ← Volver a conteos
+            </a>
+
+            <h1>Nuevo conteo físico</h1>
+
+            <p>
+                Registra las cantidades reales encontradas
+                para compararlas con las existencias del sistema.
+            </p>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <div th:if="${error}" class="alerta-error"
+                 th:text="${error}"></div>
+
+            <form th:action="@{/inventario/conteos/nuevo}"
+                  th:object="${formulario}"
+                  method="post">
+
+                <div class="formulario-producto">
+
+                    <h2>Configuración del conteo</h2>
+
+                    <div class="campo-formulario">
+
+                        <label for="tipoConteo">
+                            Modalidad de conteo
+                        </label>
+
+                        <select id="tipoConteo"
+                                th:field="*{tipoConteo}">
+
+                            <option value="COMPLETO">
+                                Conteo completo
+                            </option>
+
+                            <option value="PARCIAL">
+                                Conteo parcial
+                            </option>
+
+                        </select>
+
+                        <small>
+                            En el conteo parcial puedes desmarcar
+                            los productos que no deseas revisar.
+                        </small>
+
+                    </div>
+
+                    <h2>Productos para verificar</h2>
+
+                    <p class="descripcion">
+                        Marca los productos que revisarás e ingresa
+                        las cantidades encontradas físicamente.
+                    </p>
+
+                    <div class="tabla-contenedor">
+
+                        <table class="tabla-productos">
+
+                            <thead>
+                            <tr>
+                                <th>Incluir</th>
+                                <th>Código</th>
+                                <th>Producto</th>
+                                <th>Stock del sistema</th>
+                                <th>Stock físico</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                            <tr th:each="detalle, iterStat : *{detalles}">
+
+                                <td>
+                                    <input type="checkbox"
+                                           th:field="*{detalles[__${iterStat.index}__].seleccionado}">
+                                </td>
+
+                                <td th:text="${detalle.codigoProducto}"></td>
+
+                                <td th:text="${detalle.nombreProducto}"></td>
+
+                                <td th:text="${detalle.stockSistema}"></td>
+
+                                <td>
+
+                                    <input type="hidden"
+                                           th:field="*{detalles[__${iterStat.index}__].productoId}">
+
+                                    <input type="number"
+                                           min="0"
+                                           placeholder="Cantidad"
+                                           th:field="*{detalles[__${iterStat.index}__].stockFisico}"
+                                           style="width:110px">
+
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div class="botones-formulario">
+
+                        <a th:href="@{/inventario/conteos}"
+                           class="btn-secundario">
+                            Cancelar
+                        </a>
+
+                        <button type="submit" class="btn-primario">
+                            Registrar conteo
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>

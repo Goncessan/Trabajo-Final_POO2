@@ -13,27 +13,33 @@ import java.util.Locale;
 @Service
 public class InventarioService {
 
-
     private final ProductoRepository productoRepository;
     private final MovimientoInventarioRepository movimientoRepository;
     private final RecepcionRepository recepcionRepository;
+    private final AuditoriaInventarioService auditoriaService;
 
     public InventarioService(
             ProductoRepository productoRepository,
             MovimientoInventarioRepository movimientoRepository,
-            RecepcionRepository recepcionRepository) {
+            RecepcionRepository recepcionRepository,
+            AuditoriaInventarioService auditoriaService) {
 
         this.productoRepository = productoRepository;
         this.movimientoRepository = movimientoRepository;
         this.recepcionRepository = recepcionRepository;
+        this.auditoriaService = auditoriaService;
     }
+
+    // LISTAR PRODUCTOS
 
     @Transactional(readOnly = true)
     public List<Producto> listarProductos() {
+
         return productoRepository.findAllByOrderByNombreAsc();
     }
 
     // BUSQUEDAS Y FILTROS
+
     @Transactional(readOnly = true)
     public List<Producto> filtrarProductos(
             String busqueda,
@@ -90,6 +96,7 @@ public class InventarioService {
 
     @Transactional(readOnly = true)
     public long contarProductos() {
+
         return productoRepository.count();
     }
 
@@ -123,6 +130,7 @@ public class InventarioService {
     }
 
     // REGISTRAR PRODUCTO Y STOCK INICIAL
+
     @Transactional
     public void guardarProducto(Producto producto) {
 
@@ -130,7 +138,8 @@ public class InventarioService {
 
         Producto guardado = productoRepository.save(producto);
 
-        // El stock inicial se registra como una entrada
+        // Registrar el stock inicial como una entrada
+
         if (guardado.getStock() > 0) {
 
             MovimientoInventario movimiento =
@@ -145,9 +154,21 @@ public class InventarioService {
 
             movimientoRepository.save(movimiento);
         }
+
+        // REGISTRAR AUDITORÍA
+
+        auditoriaService.registrar(
+                "REGISTRO",
+                "Se registró el producto: "
+                        + guardado.getNombre()
+                        + ". Stock inicial: "
+                        + guardado.getStock(),
+                guardado.getCodigo()
+        );
     }
 
     // ACTUALIZAR DATOS DEL PRODUCTO
+
     @Transactional
     public void actualizarProducto(
             Long id,
@@ -165,10 +186,19 @@ public class InventarioService {
         producto.setPrecioVenta(datosActualizados.getPrecioVenta());
         producto.setStockMinimo(datosActualizados.getStockMinimo());
 
-        // No modificamos el stock desde este formulario.
+        // El stock no se modifica desde este formulario.
         // Las existencias se controlan mediante movimientos.
 
         productoRepository.save(producto);
+
+        // REGISTRAR AUDITORÍA
+
+        auditoriaService.registrar(
+                "EDICIÓN",
+                "Se actualizaron los datos del producto: "
+                        + producto.getNombre(),
+                producto.getCodigo()
+        );
     }
 
     // ELIMINAR SOLO PRODUCTOS SIN MOVIMIENTOS
@@ -190,8 +220,19 @@ public class InventarioService {
 
         productoRepository.delete(producto);
 
+        // REGISTRAR AUDITORÍA
+
+        auditoriaService.registrar(
+                "ELIMINACIÓN",
+                "Se eliminó el producto: "
+                        + producto.getNombre(),
+                producto.getCodigo()
+        );
+
         return true;
     }
+
+    // NORMALIZAR DATOS
 
     private void normalizarDatos(Producto producto) {
 

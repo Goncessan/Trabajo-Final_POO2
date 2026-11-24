@@ -1,178 +1,412 @@
 
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
     <title>Esencia & Aroma | Registrar abono</title>
+
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
 </head>
+
 <body class="app-body">
 
 <header class="encabezado">
-    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="logo">
+        Esencia <span>&amp; Aroma</span>
+    </div>
+
     <div class="accesos">Administración</div>
 </header>
 
 <div class="panel-principal">
+
+    <!-- MENÚ LATERAL -->
+
     <aside class="menu-lateral">
+
         <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
         <nav class="menu-enlaces">
+
             <a th:href="@{/panel}">Inicio</a>
+
             <a th:href="@{/inventario}">Inventario</a>
-            <a th:href="@{/abastecimiento}">Abastecimiento</a>
-            <a th:href="@{/ventas}">Clientes y Ventas</a>
+
+            <a th:href="@{/abastecimiento}">
+                Abastecimiento
+            </a>
+
+            <a th:href="@{/ventas}">
+                Clientes y Ventas
+            </a>
+
             <a th:href="@{/cobranzas}" class="activo">
                 Cobranzas y Reportes
             </a>
+
         </nav>
+
         <div class="menu-inferior">
-            <form th:action="@{/logout}" method="post"
+
+            <form th:action="@{/logout}"
+                  method="post"
                   class="form-cerrar-sesion">
-                <button type="submit" class="btn-cerrar-sesion">
+
+                <button type="submit"
+                        class="btn-cerrar-sesion">
                     Cerrar sesión
                 </button>
+
             </form>
+
             <p>Esencia &amp; Aroma</p>
-            <span>Sistema de gestión comercial</span>
+
+            <span>
+                Sistema de gestión comercial
+            </span>
+
         </div>
+
     </aside>
 
+    <!-- CONTENIDO PRINCIPAL -->
+
     <main class="contenido">
+
         <section class="bienvenida">
-            <a th:href="@{/cobranzas}" class="volver-panel">
+
+            <a th:href="@{/cobranzas}"
+               class="volver-panel">
                 ← Volver a Cobranzas
             </a>
+
             <h1>Registrar abono</h1>
-            <p>Actualiza el saldo pendiente de una venta al crédito.</p>
+
+            <p>
+                Registra el pago recibido y actualiza
+                el saldo pendiente de una venta al crédito.
+            </p>
+
         </section>
 
         <section class="seccion-modulos">
 
+            <!-- INFORMACIÓN DE LA VENTA -->
+
             <div class="ea-bloque">
+
                 <h2>Información de la venta</h2>
 
                 <div class="ea-campos">
+
                     <div class="ea-campo">
+
                         <label>Cliente</label>
-                        <strong th:text="${venta.cliente.nombre}"></strong>
+
+                        <strong
+                                th:text="${venta.cliente.nombre}">
+                        </strong>
+
                     </div>
 
                     <div class="ea-campo">
+
                         <label>Producto</label>
-                        <strong th:text="${venta.producto.nombre}"></strong>
+
+                        <strong
+                                th:text="${venta.producto.nombre}">
+                        </strong>
+
                     </div>
+
                 </div>
 
                 <div class="ea-resumen">
+
                     <div class="ea-tarjeta">
+
                         <span>Total de la venta</span>
-                        <strong th:text="|S/ ${venta.total}|"></strong>
+
+                        <strong
+                                th:text="|S/ ${venta.total}|">
+                        </strong>
+
                     </div>
 
                     <div class="ea-tarjeta">
+
                         <span>Monto pagado</span>
-                        <strong th:text="|S/ ${venta.montoPagado}|"></strong>
+
+                        <strong
+                                th:text="|S/ ${venta.montoPagado}|">
+                        </strong>
+
                     </div>
 
                     <div class="ea-tarjeta">
+
                         <span>Saldo pendiente</span>
-                        <strong th:text="|S/ ${venta.saldo}|"></strong>
+
+                        <strong
+                                th:text="|S/ ${venta.saldo}|">
+                        </strong>
+
                     </div>
+
                 </div>
+
             </div>
 
+            <!-- REGISTRAR NUEVO ABONO -->
+
             <div class="ea-bloque">
+
                 <h2>Nuevo abono</h2>
+
+                <p class="descripcion">
+                    Completa los datos del pago recibido
+                    para actualizar la deuda del cliente.
+                </p>
 
                 <form th:action="@{/cobranzas/abonar/{id}(id=${venta.id})}"
                       th:object="${formulario}"
                       method="post">
 
+                    <!-- ERRORES GENERALES -->
+
                     <div class="alerta-error"
                          th:if="${#fields.hasAnyErrors()}">
+
                         <p th:each="e : ${#fields.allErrors()}"
-                           th:text="${e.defaultMessage}"></p>
+                           th:text="${e.defaultMessage}">
+                        </p>
+
                     </div>
 
                     <div class="ea-campos">
+
+                        <!-- IMPORTE DEL ABONO -->
+
                         <div class="ea-campo">
-                            <label>Importe del abono (S/) *</label>
-                            <input type="number"
+
+                            <label for="monto">
+                                Importe del abono (S/) *
+                            </label>
+
+                            <input id="monto"
+                                   type="number"
                                    th:field="*{monto}"
                                    min="0.01"
                                    step="0.01"
                                    required>
+
                         </div>
 
+                        <!-- MEDIO DE PAGO -->
+
                         <div class="ea-campo">
-                            <label>Observación</label>
-                            <input type="text"
+
+                            <label for="medioPago">
+                                Medio de pago *
+                            </label>
+
+                            <select id="medioPago"
+                                    th:field="*{medioPago}"
+                                    required>
+
+                                <option value="">
+                                    Seleccionar medio de pago
+                                </option>
+
+                                <option
+                                        th:each="medio : ${mediosPago}"
+                                        th:value="${medio.name()}"
+                                        th:text="${medio.nombre}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- REFERENCIA DE OPERACIÓN -->
+
+                        <div class="ea-campo">
+
+                            <label for="referenciaOperacion">
+                                Número o referencia de operación
+                            </label>
+
+                            <input id="referenciaOperacion"
+                                   type="text"
+                                   th:field="*{referenciaOperacion}"
+                                   maxlength="100"
+                                   placeholder="Ej. Número de operación Yape o Plin">
+
+                            <small class="ayuda-stock">
+                                Opcional. Puedes registrar el número
+                                de operación de Yape, Plin o transferencia.
+                            </small>
+
+                        </div>
+
+                        <!-- OBSERVACIÓN -->
+
+                        <div class="ea-campo">
+
+                            <label for="observacion">
+                                Observación
+                            </label>
+
+                            <input id="observacion"
+                                   type="text"
                                    th:field="*{observacion}"
                                    maxlength="200"
-                                   placeholder="Ej. Abono en efectivo">
+                                   placeholder="Ej. Abono de campaña">
+
                         </div>
+
                     </div>
 
                     <p class="ea-nota">
-                        El abono no puede superar el saldo pendiente.
+                        El abono no puede superar el saldo
+                        pendiente de la venta. Verifica que
+                        el pago haya sido recibido antes de registrarlo.
                     </p>
 
+                    <!-- BOTONES -->
+
                     <div class="ea-acciones">
+
                         <a th:href="@{/cobranzas}"
                            class="btn-secundario">
                             Cancelar
                         </a>
 
-                        <button type="submit" class="btn-primario">
+                        <button type="submit"
+                                class="btn-primario">
                             Guardar abono
                         </button>
+
                     </div>
+
                 </form>
+
             </div>
 
+            <!-- HISTORIAL DE ABONOS -->
+
             <div class="ea-bloque">
+
                 <h2>Historial de abonos</h2>
 
                 <p class="descripcion">
+
                     Pago inicial registrado:
-                    <strong th:text="|S/ ${venta.pagoInicial}|"></strong>
+
+                    <strong
+                            th:text="|S/ ${venta.pagoInicial}|">
+                    </strong>
+
                 </p>
+
+                <!-- SIN REGISTROS -->
 
                 <div class="estado-vacio"
                      th:if="${#lists.isEmpty(abonos)}">
-                    Todavía no se han registrado abonos posteriores.
+
+                    Todavía no se han registrado
+                    abonos posteriores.
+
                 </div>
+
+                <!-- TABLA DE ABONOS -->
 
                 <div class="tabla-contenedor"
                      th:unless="${#lists.isEmpty(abonos)}">
+
                     <table class="tabla-productos">
+
                         <thead>
+
                         <tr>
                             <th>Fecha</th>
                             <th>Importe</th>
+                            <th>Medio de pago</th>
+                            <th>Referencia</th>
                             <th>Observación</th>
+                            <th>Comprobante</th>
                         </tr>
+
                         </thead>
 
                         <tbody>
+
                         <tr th:each="a : ${abonos}">
-                            <td th:text="${#temporals.format(a.fechaRegistro, 'dd/MM/yyyy HH:mm')}">
+
+                            <!-- FECHA -->
+
+                            <td th:text="${#temporals.format(
+                                    a.fechaRegistro,
+                                    'dd/MM/yyyy HH:mm')}">
                             </td>
-                            <td th:text="|S/ ${a.monto}|"></td>
-                            <td th:text="${a.observacion}"></td>
+
+                            <!-- IMPORTE -->
+
+                            <td th:text="|S/ ${a.monto}|">
+                            </td>
+
+                            <!-- MEDIO DE PAGO -->
+
+                            <td th:text="${a.medioPago.nombre}">
+                            </td>
+
+                            <!-- REFERENCIA -->
+
+                            <td th:text="${a.referenciaOperacion != null
+                                    and !a.referenciaOperacion.isBlank()
+                                    ? a.referenciaOperacion
+                                    : '-'}">
+                            </td>
+
+                            <!-- OBSERVACIÓN -->
+
+                            <td th:text="${a.observacion != null
+                                    and !a.observacion.isBlank()
+                                    ? a.observacion
+                                    : '-'}">
+                            </td>
+
+                            <td>
+                                <a th:href="@{/cobranzas/comprobantes/{id}(id=${a.id})}"
+                                   class="enlace-editar">
+                                    Ver comprobante
+                                </a>
+                            </td>
+
                         </tr>
+
                         </tbody>
+
                     </table>
+
                 </div>
+
             </div>
 
         </section>
+
     </main>
+
 </div>
 
 <footer class="app-footer">
-    Esencia &amp; Aroma © 2026 - Sistema de Gestión Comercial
+    Esencia &amp; Aroma © 2026 -
+    Sistema de Gestión Comercial
 </footer>
+
 </body>
 </html>

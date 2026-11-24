@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Nueva orden de compra</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}" class="activo">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post" class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">Cerrar sesión</button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+            <a th:href="@{/abastecimiento/ordenes}" class="volver-panel">
+                ← Volver a órdenes de compra
+            </a>
+            <h1>Registrar orden de compra</h1>
+            <p>Selecciona el pedido y establece la fecha de entrega.</p>
+        </section>
+
+        <section class="seccion-modulos">
+
+            <form class="formulario-producto"
+                  th:action="@{/abastecimiento/ordenes/nueva}"
+                  th:object="${formulario}"
+                  method="post">
+
+                <div class="alerta-error"
+                     th:if="${error}" th:text="${error}">
+                </div>
+
+                <div class="alerta-error"
+                     th:if="${#fields.hasAnyErrors()}">
+                    <p th:each="e : ${#fields.allErrors()}"
+                       th:text="${e.defaultMessage}"></p>
+                </div>
+
+                <div class="grid-formulario">
+
+                    <div class="campo-formulario">
+                        <label for="pedidoId">Pedido asociado *</label>
+
+                        <select id="pedidoId"
+                                th:field="*{pedidoId}"
+                                required>
+
+                            <option value="">Seleccionar pedido</option>
+
+                            <option th:each="p : ${pedidos}"
+                                    th:value="${p.id}"
+                                    th:text="${'Pedido #' + p.id
+                                        + ' - ' + p.proveedor.nombre
+                                        + ' - ' + p.campania.nombre}">
+                            </option>
+
+                        </select>
+
+                        <small class="mensaje-error"
+                               th:errors="*{pedidoId}"></small>
+                    </div>
+
+                    <div class="campo-formulario">
+                        <label for="fechaEntrega">Fecha de entrega *</label>
+
+                        <input id="fechaEntrega"
+                               type="date"
+                               th:field="*{fechaEntrega}"
+                               required>
+
+                        <small class="mensaje-error"
+                               th:errors="*{fechaEntrega}"></small>
+                    </div>
+
+                </div>
+
+                <div class="acciones-formulario">
+
+                    <a th:href="@{/abastecimiento/ordenes}"
+                       class="btn-secundario">
+                        Cancelar
+                    </a>
+
+                    <button type="submit"
+                            class="btn-primario"
+                            th:disabled="${#lists.isEmpty(pedidos)}">
+                        Generar orden de compra
+                    </button>
+
+                </div>
+
+                <p class="ea-nota"
+                   th:if="${#lists.isEmpty(pedidos)}">
+                    Primero debes registrar un pedido de abastecimiento
+                    para poder generar una orden de compra.
+                </p>
+
+            </form>
+
+        </section>
+    </main>
+</div>
+
+<footer class="app-footer">Esencia &amp; Aroma © 2026</footer>
+</body>
+</html>

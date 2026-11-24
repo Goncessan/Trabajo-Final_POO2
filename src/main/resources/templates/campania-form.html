@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Nueva campaña</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}" class="activo">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post" class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">Cerrar sesión</button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+            <a th:href="@{/abastecimiento/campanias}" class="volver-panel">
+                ← Volver a campañas
+            </a>
+            <h1>Registrar nueva campaña</h1>
+            <p>Ingresa la información del periodo comercial.</p>
+        </section>
+
+        <section class="seccion-modulos">
+
+            <form class="formulario-producto"
+                  th:action="@{/abastecimiento/campanias/nueva}"
+                  th:object="${formulario}"
+                  method="post">
+
+                <div class="alerta-error"
+                     th:if="${#fields.hasAnyErrors()}">
+                    <p th:each="e : ${#fields.allErrors()}"
+                       th:text="${e.defaultMessage}"></p>
+                </div>
+
+                <div class="grid-formulario">
+
+                    <div class="campo-formulario">
+                        <label for="nombre">Nombre de campaña *</label>
+                        <input id="nombre" type="text"
+                               th:field="*{nombre}" required>
+                        <small class="mensaje-error"
+                               th:errors="*{nombre}"></small>
+                    </div>
+
+                    <div class="campo-formulario">
+                        <label for="marca">Marca *</label>
+                        <select id="marca" th:field="*{marca}" required>
+                            <option value="">Seleccionar marca</option>
+                            <option th:each="m : ${marcas}"
+                                    th:value="${m.name()}"
+                                    th:text="${m.nombre}">
+                            </option>
+                        </select>
+                        <small class="mensaje-error"
+                               th:errors="*{marca}"></small>
+                    </div>
+
+                    <div class="campo-formulario">
+                        <label for="fechaInicio">Fecha de inicio *</label>
+                        <input id="fechaInicio" type="date"
+                               th:field="*{fechaInicio}" required>
+                        <small class="mensaje-error"
+                               th:errors="*{fechaInicio}"></small>
+                    </div>
+
+                    <div class="campo-formulario">
+                        <label for="fechaFin">Fecha de finalización *</label>
+                        <input id="fechaFin" type="date"
+                               th:field="*{fechaFin}" required>
+                        <small class="mensaje-error"
+                               th:errors="*{fechaFin}"></small>
+                    </div>
+
+                </div>
+
+                <div class="acciones-formulario">
+                    <a th:href="@{/abastecimiento/campanias}"
+                       class="btn-secundario">Cancelar</a>
+
+                    <button type="submit" class="btn-primario">
+                        Guardar campaña
+                    </button>
+                </div>
+
+            </form>
+
+        </section>
+    </main>
+</div>
+
+<footer class="app-footer">Esencia &amp; Aroma © 2026</footer>
+</body>
+</html>

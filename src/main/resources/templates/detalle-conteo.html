@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Resultado del conteo</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}" class="activo">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/inventario/conteos}"
+               class="volver-panel">
+                ← Volver a conteos
+            </a>
+
+            <h1>Resultado del conteo físico</h1>
+
+            <p>
+                Revisa las diferencias encontradas antes de
+                confirmar los ajustes del inventario.
+            </p>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <div th:if="${mensaje}" class="alerta-exito"
+                 th:text="${mensaje}"></div>
+
+            <div th:if="${error}" class="alerta-error"
+                 th:text="${error}"></div>
+
+            <div class="formulario-producto">
+
+                <h2>Información del conteo</h2>
+
+                <p>
+                    <strong>Número:</strong>
+                    <span th:text="${conteo.id}"></span>
+                </p>
+
+                <p>
+                    <strong>Fecha:</strong>
+                    <span th:text="${#temporals.format(
+                        conteo.fechaRegistro,
+                        'dd/MM/yyyy HH:mm')}"></span>
+                </p>
+
+                <p>
+                    <strong>Usuario:</strong>
+                    <span th:text="${conteo.usuario}"></span>
+                </p>
+
+                <p>
+                    <strong>Modalidad:</strong>
+                    <span th:text="${conteo.tipoConteo}"></span>
+                </p>
+
+                <p>
+                    <strong>Estado:</strong>
+                    <span th:text="${conteo.estado}"></span>
+                </p>
+
+            </div>
+
+
+            <div style="display:flex;justify-content:flex-end;margin-bottom:18px;">
+
+                <a th:href="@{/inventario/conteos/{id}/reporte(id=${conteo.id})}"
+                   class="btn-primario">
+
+                    Ver reporte de diferencias
+
+                </a>
+
+            </div>
+
+            <div class="tabla-contenedor">
+
+                <table class="tabla-productos">
+
+                    <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Stock sistema</th>
+                        <th>Stock físico</th>
+                        <th>Diferencia</th>
+                        <th>Resultado</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="detalle : ${detalles}">
+
+                        <td th:text="${detalle.nombreProducto}"></td>
+
+                        <td th:text="${detalle.stockSistema}"></td>
+
+                        <td th:text="${detalle.stockFisico}"></td>
+
+                        <td th:text="${detalle.diferencia > 0
+                            ? '+' + detalle.diferencia
+                            : detalle.diferencia}"></td>
+
+                        <td>
+
+                            <span th:if="${detalle.diferencia > 0}">
+                                Sobrante
+                            </span>
+
+                            <span th:if="${detalle.diferencia < 0}">
+                                Faltante
+                            </span>
+
+                            <span th:if="${detalle.diferencia == 0}">
+                                Coincide
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div th:if="${conteo.estado == 'PENDIENTE'}"
+                 class="botones-formulario">
+
+                <form th:action="@{/inventario/conteos/{id}/confirmar(id=${conteo.id})}"
+                      method="post"
+                      onsubmit="return confirm('¿Deseas confirmar los ajustes? Se actualizarán las existencias y se registrarán los movimientos correspondientes.');">
+
+                    <button type="submit" class="btn-primario">
+                        Confirmar ajustes de inventario
+                    </button>
+
+                </form>
+
+            </div>
+
+            <div th:if="${conteo.estado == 'CONFIRMADO'}"
+                 class="alerta-exito">
+
+                Este conteo ya fue confirmado y sus ajustes fueron procesados.
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>

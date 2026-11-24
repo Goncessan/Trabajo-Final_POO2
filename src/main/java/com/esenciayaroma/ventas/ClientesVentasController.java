@@ -1,6 +1,6 @@
 package com.esenciayaroma.ventas;
 
-import com.esenciayaroma.ventas.alerta.AlertaStockServicio;
+import com.esenciayaroma.ventas.alerta.AlertaStockVentaServicio;
 import com.esenciayaroma.ventas.soporte.RutasVentas;
 
 import org.springframework.stereotype.Controller;
@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ClientesVentasController {
 
     private final ClientesVentasService service;
-    private final AlertaStockServicio alertaServicio;
+    private final AlertaStockVentaServicio alertaServicio;
 
     public ClientesVentasController(
             ClientesVentasService service,
-            AlertaStockServicio alertaServicio) {
+            AlertaStockVentaServicio alertaServicio) {
 
         this.service = service;
         this.alertaServicio = alertaServicio;

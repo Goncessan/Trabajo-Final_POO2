@@ -9,21 +9,32 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 @Controller
 @RequestMapping("/inventario")
 public class InventarioController {
 
+    private final InventarioFacade inventarioFacade;
     private final InventarioService inventarioService;
+    private final CategoriaInventarioService categoriaService;
 
     public InventarioController(
-            InventarioService inventarioService) {
+            InventarioFacade inventarioFacade,
+            InventarioService inventarioService,
+            CategoriaInventarioService categoriaService) {
 
+        this.inventarioFacade = inventarioFacade;
         this.inventarioService = inventarioService;
+        this.categoriaService = categoriaService;
     }
 
     // MOSTRAR INVENTARIO CON FILTROS
+
     @GetMapping
     public String mostrarInventario(
+
             @RequestParam(name = "busqueda", defaultValue = "")
             String busqueda,
 
@@ -38,26 +49,29 @@ public class InventarioController {
 
             Model model) {
 
-        model.addAttribute(
-                "productos",
-                inventarioService.filtrarProductos(
+        ResumenInventario resumen =
+                inventarioFacade.obtenerResumen(
                         busqueda,
                         marca,
                         categoria,
                         soloBajo
-                )
+                );
+
+        model.addAttribute(
+                "productos",
+                resumen.getProductos()
         );
 
         model.addAttribute(
                 "totalProductos",
-                inventarioService.contarProductos()
+                resumen.getTotalProductos()
         );
 
         model.addAttribute("marcas", Marca.values());
 
         model.addAttribute(
                 "categorias",
-                inventarioService.listarCategorias()
+                resumen.getCategorias()
         );
 
         model.addAttribute("busqueda", busqueda);
@@ -78,26 +92,32 @@ public class InventarioController {
     }
 
     // FORMULARIO NUEVO PRODUCTO
+
     @GetMapping("/nuevo")
     public String mostrarFormulario(Model model) {
 
         model.addAttribute("producto", new Producto());
-        model.addAttribute("marcas", Marca.values());
+
+        cargarOpcionesFormulario(model);
 
         return "producto-form";
     }
 
     // REGISTRAR PRODUCTO
+
     @PostMapping("/nuevo")
     public String registrarProducto(
+
             @Valid @ModelAttribute("producto")
             Producto producto,
+
             BindingResult resultado,
             Model model,
             RedirectAttributes atributos) {
 
         if (!resultado.hasFieldErrors("codigo")
-                && inventarioService.existeCodigo(
+                && producto.getCodigo() != null
+                && inventarioFacade.existeCodigo(
                 producto.getCodigo())) {
 
             resultado.rejectValue(
@@ -109,12 +129,12 @@ public class InventarioController {
 
         if (resultado.hasErrors()) {
 
-            model.addAttribute("marcas", Marca.values());
+            cargarOpcionesFormulario(model);
 
             return "producto-form";
         }
 
-        inventarioService.guardarProducto(producto);
+        inventarioFacade.guardarProducto(producto);
 
         atributos.addFlashAttribute(
                 "mensaje",
@@ -125,32 +145,39 @@ public class InventarioController {
     }
 
     // FORMULARIO EDITAR PRODUCTO
+
     @GetMapping("/editar/{id}")
     public String mostrarEdicion(
             @PathVariable Long id,
             Model model) {
 
         Producto producto =
-                inventarioService.obtenerPorId(id);
+                inventarioFacade.obtenerProducto(id);
 
         model.addAttribute("producto", producto);
-        model.addAttribute("marcas", Marca.values());
+
+        cargarOpcionesFormulario(model);
 
         return "producto-form";
     }
 
     // ACTUALIZAR PRODUCTO
+
     @PostMapping("/editar/{id}")
     public String actualizarProducto(
+
             @PathVariable Long id,
+
             @Valid @ModelAttribute("producto")
             Producto producto,
+
             BindingResult resultado,
             Model model,
             RedirectAttributes atributos) {
 
         if (!resultado.hasFieldErrors("codigo")
-                && inventarioService
+                && producto.getCodigo() != null
+                && inventarioFacade
                 .existeOtroProductoConCodigo(
                         producto.getCodigo(), id)) {
 
@@ -165,12 +192,12 @@ public class InventarioController {
 
             producto.setId(id);
 
-            model.addAttribute("marcas", Marca.values());
+            cargarOpcionesFormulario(model);
 
             return "producto-form";
         }
 
-        inventarioService.actualizarProducto(id, producto);
+        inventarioFacade.actualizarProducto(id, producto);
 
         atributos.addFlashAttribute(
                 "mensaje",
@@ -187,14 +214,18 @@ public class InventarioController {
             @PathVariable Long id,
             RedirectAttributes atributos) {
 
-        boolean eliminado = inventarioService.eliminarProducto(id);
+        boolean eliminado =
+                inventarioFacade.eliminarProducto(id);
 
         if (eliminado) {
+
             atributos.addFlashAttribute(
                     "mensaje",
                     "Producto eliminado correctamente."
             );
+
         } else {
+
             atributos.addFlashAttribute(
                     "error",
                     "No se puede eliminar el producto porque tiene movimientos o recepciones registrados."
@@ -204,6 +235,35 @@ public class InventarioController {
         return "redirect:/inventario";
     }
 
+    // CARGAR MARCAS Y CATEGORÍAS PARA EL FORMULARIO
 
+    private void cargarOpcionesFormulario(Model model) {
 
+        model.addAttribute("marcas", Marca.values());
+
+        Set<String> categoriasDisponibles =
+                new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
+        // Categorías administradas desde la web
+
+        categoriaService.listar()
+                .stream()
+                .map(CategoriaInventario::getNombre)
+                .filter(nombre -> nombre != null
+                        && !nombre.isBlank())
+                .forEach(categoriasDisponibles::add);
+
+        // Mantener categorías de productos existentes
+
+        inventarioService.listarCategorias()
+                .stream()
+                .filter(nombre -> nombre != null
+                        && !nombre.isBlank())
+                .forEach(categoriasDisponibles::add);
+
+        model.addAttribute(
+                "categoriasDisponibles",
+                categoriasDisponibles
+        );
+    }
 }

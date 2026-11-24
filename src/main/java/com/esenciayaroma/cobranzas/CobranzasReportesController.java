@@ -25,11 +25,13 @@ public class CobranzasReportesController {
         this.cobranzaService = cobranzaService;
     }
 
-    // PAGINA PRINCIPAL DE COBRANZAS
+    // PÁGINA PRINCIPAL DE COBRANZAS
+
     @GetMapping
     public String mostrarCobranzas(Model model) {
 
-        List<Venta> creditos = cobranzaService.listarCreditos();
+        List<Venta> creditos =
+                cobranzaService.listarCreditos();
 
         model.addAttribute("creditos", creditos);
 
@@ -44,6 +46,7 @@ public class CobranzasReportesController {
     }
 
     // MOSTRAR FORMULARIO DE ABONO
+
     @GetMapping("/abonar/{id}")
     public String formularioAbono(
             @PathVariable Long id,
@@ -62,13 +65,18 @@ public class CobranzasReportesController {
             return "redirect:/cobranzas";
         }
 
-        model.addAttribute("formulario", new AbonoFormulario());
+        model.addAttribute(
+                "formulario",
+                new AbonoFormulario()
+        );
+
         cargarDetalle(id, model);
 
         return "abono-form";
     }
 
     // GUARDAR ABONO
+
     @PostMapping("/abonar/{id}")
     public String registrarAbono(
             @PathVariable Long id,
@@ -79,11 +87,13 @@ public class CobranzasReportesController {
             RedirectAttributes atributos) {
 
         if (resultado.hasErrors()) {
+
             cargarDetalle(id, model);
             return "abono-form";
         }
 
         try {
+
             cobranzaService.registrarAbono(id, formulario);
 
         } catch (IllegalArgumentException e) {
@@ -105,7 +115,8 @@ public class CobranzasReportesController {
         return "redirect:/cobranzas";
     }
 
-    // REPORTES BASICOS
+    // REPORTES BÁSICOS
+
     @GetMapping("/reportes")
     public String mostrarReportes(Model model) {
 
@@ -138,6 +149,8 @@ public class CobranzasReportesController {
         return "reportes";
     }
 
+    // DATOS NECESARIOS PARA EL FORMULARIO
+
     private void cargarDetalle(Long id, Model model) {
 
         model.addAttribute(
@@ -148,6 +161,18 @@ public class CobranzasReportesController {
         model.addAttribute(
                 "abonos",
                 cobranzaService.listarAbonos(id)
+        );
+
+        model.addAttribute(
+                "mediosPago",
+                new MedioPago[]{
+                        MedioPago.EFECTIVO,
+                        MedioPago.YAPE,
+                        MedioPago.PLIN,
+                        MedioPago.TRANSFERENCIA,
+                        MedioPago.TARJETA,
+                        MedioPago.OTRO
+                }
         );
     }
 }

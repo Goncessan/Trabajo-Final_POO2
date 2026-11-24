@@ -15,16 +15,23 @@ public class CobranzaService {
 
     private final VentaRepository ventaRepository;
     private final AbonoRepository abonoRepository;
+    private final AbonoFactory abonoFactory;
+    private final AuditoriaCobranzaService auditoriaService;
 
     public CobranzaService(
             VentaRepository ventaRepository,
-            AbonoRepository abonoRepository) {
+            AbonoRepository abonoRepository,
+            AbonoFactory abonoFactory,
+            AuditoriaCobranzaService auditoriaService) {
 
         this.ventaRepository = ventaRepository;
         this.abonoRepository = abonoRepository;
+        this.abonoFactory = abonoFactory;
+        this.auditoriaService = auditoriaService;
     }
 
-    // CONSULTAR VENTAS AL CREDITO
+    // LISTAR VENTAS AL CRÉDITO
+
     @Transactional(readOnly = true)
     public List<Venta> listarCreditos() {
 
@@ -34,7 +41,8 @@ public class CobranzaService {
                 );
     }
 
-    // CONSULTAR TODAS LAS VENTAS PARA REPORTES
+    // LISTAR TODAS LAS VENTAS
+
     @Transactional(readOnly = true)
     public List<Venta> listarTodasVentas() {
 
@@ -42,18 +50,22 @@ public class CobranzaService {
                 .findAllByOrderByFechaRegistroDescIdDesc();
     }
 
-    // CONSULTAR UNA VENTA
+    // OBTENER VENTA
+
     @Transactional(readOnly = true)
     public Venta obtenerVenta(Long id) {
 
         return ventaRepository.buscarDetalle(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Venta no encontrada"
-                ));
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Venta no encontrada"
+                        )
+                );
     }
 
-    // HISTORIAL DE ABONOS DE UNA VENTA
+    // LISTAR ABONOS DE UNA VENTA
+
     @Transactional(readOnly = true)
     public List<Abono> listarAbonos(Long ventaId) {
 
@@ -63,42 +75,54 @@ public class CobranzaService {
                 );
     }
 
-    // REGISTRAR ABONO
+    // REGISTRAR ABONO Y AUDITORÍA
+
     @Transactional
     public void registrarAbono(
             Long ventaId,
             AbonoFormulario formulario) {
 
-        Venta venta = ventaRepository.buscarParaAbono(ventaId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Venta no encontrada"
-                ));
+        // 1. Buscar y bloquear la venta
+
+        Venta venta = ventaRepository
+                .buscarParaAbono(ventaId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Venta no encontrada"
+                        )
+                );
+
+        // 2. Validar que sea venta al crédito
 
         if (venta.getFormaPago() != FormaPago.CREDITO) {
+
             throw new IllegalArgumentException(
-                    "Solo se pueden registrar abonos " +
-                            "en ventas al crédito."
+                    "Solo se pueden registrar abonos "
+                            + "en ventas al crédito."
             );
         }
 
-        // Actualizar el monto pagado
-        venta.registrarAbono(formulario.getMonto());
+        // 3. Crear abono mediante Factory
 
-        // Crear registro del abono
-        String observacion = formulario.getObservacion();
-
-        if (observacion != null) {
-            observacion = observacion.trim();
-        }
-
-        Abono abono = new Abono(
+        Abono abono = abonoFactory.crearAbono(
                 venta,
-                formulario.getMonto(),
-                observacion
+                formulario
         );
 
+        // 4. Validar y actualizar saldo
+
+        venta.registrarAbono(abono.getMonto());
+
+        // 5. Guardar la venta y el abono
+
         ventaRepository.save(venta);
-        abonoRepository.save(abono);
+
+        Abono abonoGuardado =
+                abonoRepository.saveAndFlush(abono);
+
+        // 6. Registrar auditoría en la misma transacción
+
+        auditoriaService.registrarAbono(abonoGuardado);
     }
 }

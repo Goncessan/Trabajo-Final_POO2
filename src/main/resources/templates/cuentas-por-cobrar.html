@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Cuentas por cobrar</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}" class="activo">
+                Cobranzas y Reportes
+            </a>
+        </nav>
+
+        <div class="menu-inferior">
+
+            <form th:action="@{/logout}" method="post"
+                  class="form-cerrar-sesion">
+
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+
+            </form>
+
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+
+        </div>
+
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/cobranzas}" class="volver-panel">
+                ← Volver a Cobranzas
+            </a>
+
+            <h1>Cuentas por cobrar</h1>
+
+            <p>
+                Controla los saldos pendientes de los clientes
+                que realizaron compras al crédito.
+            </p>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <!-- RESUMEN -->
+
+            <div class="ea-resumen">
+
+                <div class="ea-tarjeta">
+                    <span>Ventas pendientes</span>
+                    <strong th:text="${resumen.totalVentasPendientes}">
+                        0
+                    </strong>
+                </div>
+
+                <div class="ea-tarjeta">
+                    <span>Ventas con abonos</span>
+                    <strong th:text="${resumen.ventasConAbonos}">
+                        0
+                    </strong>
+                </div>
+
+                <div class="ea-tarjeta">
+                    <span>Clientes con deuda</span>
+                    <strong th:text="${resumen.clientesConDeuda}">
+                        0
+                    </strong>
+                </div>
+
+                <div class="ea-tarjeta">
+                    <span>Total por cobrar</span>
+                    <strong th:text="|S/ ${resumen.saldoTotal}|">
+                        S/ 0.00
+                    </strong>
+                </div>
+
+            </div>
+
+            <!-- BUSQUEDA -->
+
+            <div class="ea-bloque">
+
+                <h2>Consultar deudas</h2>
+
+                <form class="filtros-inventario"
+                      th:action="@{/cobranzas/cuentas-por-cobrar}"
+                      method="get">
+
+                    <div class="filtro-campo filtro-busqueda">
+
+                        <label for="busqueda">
+                            Buscar cliente o número de venta
+                        </label>
+
+                        <input type="search"
+                               id="busqueda"
+                               name="busqueda"
+                               placeholder="Nombre del cliente o número"
+                               th:value="${busqueda}">
+
+                    </div>
+
+                    <button type="submit"
+                            class="btn-primario">
+                        Buscar
+                    </button>
+
+                    <a th:href="@{/cobranzas/cuentas-por-cobrar}"
+                       class="btn-secundario">
+                        Limpiar
+                    </a>
+
+                </form>
+
+            </div>
+
+            <!-- TABLA DE DEUDAS -->
+
+            <div class="ea-bloque">
+
+                <h2>Detalle de cuentas pendientes</h2>
+
+                <div class="tabla-contenedor">
+
+                    <table class="tabla-productos">
+
+                        <thead>
+                        <tr>
+                            <th>N.º venta</th>
+                            <th>Cliente</th>
+                            <th>Fecha de venta</th>
+                            <th>Total</th>
+                            <th>Pagado</th>
+                            <th>Saldo pendiente</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="cuenta : ${cuentas}">
+
+                            <td th:text="${cuenta.ventaId}"></td>
+
+                            <td th:text="${cuenta.cliente}"></td>
+
+                            <td th:text="${#temporals.format(
+                                cuenta.fechaVenta,
+                                'dd/MM/yyyy HH:mm')}">
+                            </td>
+
+                            <td th:text="|S/ ${cuenta.total}|"></td>
+
+                            <td th:text="|S/ ${cuenta.montoPagado}|"></td>
+
+                            <td>
+                                <strong th:text="|S/ ${cuenta.saldo}|">
+                                </strong>
+                            </td>
+
+                            <td>
+                                <span class="estado-stock"
+                                      th:text="${cuenta.estado}">
+                                </span>
+                            </td>
+
+                            <td>
+                                <a class="enlace-editar"
+                                   th:href="@{/cobranzas/abonar/{id}(id=${cuenta.ventaId})}">
+                                    Registrar abono
+                                </a>
+                            </td>
+
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(cuentas)}">
+
+                            <td colspan="8">
+                                No existen cuentas pendientes
+                                con los criterios seleccionados.
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>

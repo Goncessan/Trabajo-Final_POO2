@@ -22,6 +22,13 @@ public class Abono {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal monto;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "medio_pago", length = 30)
+    private MedioPago medioPago;
+
+    @Column(name = "referencia_operacion", length = 100)
+    private String referenciaOperacion;
+
     @Column(length = 200)
     private String observacion;
 
@@ -31,13 +38,33 @@ public class Abono {
     public Abono() {
     }
 
+    // Constructor original: compatibilidad
     public Abono(
             Venta venta,
             BigDecimal monto,
             String observacion) {
 
+        this(
+                venta,
+                monto,
+                MedioPago.NO_ESPECIFICADO,
+                null,
+                observacion
+        );
+    }
+
+    // Constructor con información del medio de pago
+    public Abono(
+            Venta venta,
+            BigDecimal monto,
+            MedioPago medioPago,
+            String referenciaOperacion,
+            String observacion) {
+
         this.venta = venta;
         this.monto = monto;
+        this.medioPago = medioPago;
+        this.referenciaOperacion = referenciaOperacion;
         this.observacion = observacion;
         this.fechaRegistro = LocalDateTime.now();
     }
@@ -52,6 +79,16 @@ public class Abono {
 
     public BigDecimal getMonto() {
         return monto;
+    }
+
+    public MedioPago getMedioPago() {
+        return medioPago == null
+                ? MedioPago.NO_ESPECIFICADO
+                : medioPago;
+    }
+
+    public String getReferenciaOperacion() {
+        return referenciaOperacion;
     }
 
     public String getObservacion() {

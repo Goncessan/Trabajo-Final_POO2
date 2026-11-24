@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Conteos físicos</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}" class="activo">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}">Cobranzas y Reportes</a>
+        </nav>
+
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/inventario}" class="volver-panel">
+                ← Volver a Inventario
+            </a>
+
+            <h1>Conteos físicos de inventario</h1>
+
+            <p>
+                Consulta y administra las verificaciones
+                físicas de existencias.
+            </p>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <div th:if="${mensaje}" class="alerta-exito"
+                 th:text="${mensaje}"></div>
+
+            <div class="inventario-cabecera">
+
+                <div>
+                    <h2>Historial de conteos</h2>
+                    <p class="descripcion">
+                        Revisa las sesiones de verificación realizadas.
+                    </p>
+                </div>
+
+                <a th:href="@{/inventario/conteos/nuevo}"
+                   class="btn-primario">
+                    + Nuevo conteo
+                </a>
+
+            </div>
+
+            <div class="tabla-contenedor">
+
+                <table class="tabla-productos">
+
+                    <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Fecha</th>
+                        <th>Usuario</th>
+                        <th>Modalidad</th>
+                        <th>Productos</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="conteo : ${conteos}">
+
+                        <td th:text="${conteo.id}"></td>
+
+                        <td th:text="${#temporals.format(
+                            conteo.fechaRegistro,
+                            'dd/MM/yyyy HH:mm')}"></td>
+
+                        <td th:text="${conteo.usuario}"></td>
+
+                        <td th:text="${conteo.tipoConteo}"></td>
+
+                        <td th:text="${conteo.totalProductos}"></td>
+
+                        <td th:text="${conteo.estado}"></td>
+
+                        <td>
+                            <a class="enlace-editar"
+                               th:href="@{/inventario/conteos/{id}(id=${conteo.id})}">
+                                Ver detalles
+                            </a>
+                        </td>
+
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(conteos)}">
+                        <td colspan="7">
+                            Todavía no se han realizado conteos físicos.
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>

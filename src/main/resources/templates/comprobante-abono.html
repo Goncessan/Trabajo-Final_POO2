@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Esencia & Aroma | Comprobante interno</title>
+
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+
+    <style>
+        .comprobante-contenedor {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .comprobante-dato {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f1e7eb;
+        }
+
+        .comprobante-dato span {
+            color: #777;
+        }
+
+        .comprobante-monto {
+            margin: 25px 0;
+            text-align: center;
+            color: #d94b86;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .comprobante-nota {
+            margin-top: 22px;
+            color: #777;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media print {
+            .encabezado,
+            .menu-lateral,
+            .app-footer,
+            .volver-panel,
+            .ea-acciones {
+                display: none !important;
+            }
+
+            .panel-principal {
+                display: block;
+            }
+
+            .contenido {
+                width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}" class="activo">
+                Cobranzas y Reportes
+            </a>
+        </nav>
+
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post"
+                  class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+        </div>
+
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+
+            <a th:href="@{/cobranzas/auditoria}"
+               class="volver-panel">
+                ← Volver a auditoría
+            </a>
+
+            <h1>Comprobante interno de abono</h1>
+
+            <p>Constancia de un pago registrado.</p>
+
+        </section>
+
+        <section class="seccion-modulos">
+
+            <div class="ea-bloque comprobante-contenedor">
+
+                <h2>Esencia &amp; Aroma</h2>
+
+                <p class="descripcion">
+                    Constancia interna de cobranza
+                </p>
+
+                <div class="comprobante-dato">
+                    <span>Número de abono</span>
+                    <strong th:text="${comprobante.numero}">
+                    </strong>
+                </div>
+
+                <div class="comprobante-dato">
+                    <span>Venta relacionada</span>
+                    <strong th:text="${comprobante.ventaId}">
+                    </strong>
+                </div>
+
+                <div class="comprobante-dato">
+                    <span>Fecha de registro</span>
+                    <strong th:text="${#temporals.format(
+                        comprobante.fecha,
+                        'dd/MM/yyyy HH:mm')}">
+                    </strong>
+                </div>
+
+                <div class="comprobante-dato">
+                    <span>Medio de pago</span>
+                    <strong th:text="${comprobante.medioPago}">
+                    </strong>
+                </div>
+
+                <div class="comprobante-dato">
+                    <span>Referencia</span>
+                    <strong th:text="${comprobante.referencia != null
+                        && !comprobante.referencia.isBlank()
+                        ? comprobante.referencia : '-'}">
+                    </strong>
+                </div>
+
+                <div class="comprobante-dato">
+                    <span>Observación</span>
+                    <strong th:text="${comprobante.observacion != null
+                        && !comprobante.observacion.isBlank()
+                        ? comprobante.observacion : '-'}">
+                    </strong>
+                </div>
+
+                <div class="comprobante-monto"
+                     th:text="|S/ ${comprobante.monto}|">
+                    S/ 0.00
+                </div>
+
+                <p class="comprobante-nota">
+                    Documento interno generado a partir de
+                    un abono registrado en el sistema.
+                    No constituye comprobante de pago
+                    tributario ni reemplaza una boleta
+                    o factura electrónica.
+                </p>
+
+                <div class="ea-acciones">
+
+                    <a th:href="@{/cobranzas/auditoria}"
+                       class="btn-secundario">
+                        Regresar
+                    </a>
+
+                    <button type="button"
+                            class="btn-primario"
+                            onclick="window.print()">
+                        Imprimir comprobante
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>

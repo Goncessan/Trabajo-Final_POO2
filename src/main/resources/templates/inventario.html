@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -87,6 +86,7 @@
 
         <section class="seccion-modulos">
 
+
             <div class="inventario-cabecera">
 
                 <div>
@@ -97,22 +97,145 @@
                     </p>
                 </div>
 
-
                 <div class="botones-inventario">
 
-                    <a th:href="@{/inventario/movimientos}"
-                       class="btn-secundario">
-                        Ver movimientos
-                    </a>
+                    <!-- MENU DESPLEGABLE -->
+                    <details class="inventario-menu-opciones">
 
-                    <a th:href="@{/inventario/movimientos/nuevo}"
-                       class="btn-secundario">
-                        + Registrar movimiento
-                    </a>
+                        <summary class="inventario-menu-boton">
 
+                <span class="inventario-menu-izquierda">
+
+                    <span class="inventario-menu-icono">
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+
+                            <line x1="4" y1="6" x2="20" y2="6"/>
+                            <line x1="4" y1="12" x2="20" y2="12"/>
+                            <line x1="4" y1="18" x2="20" y2="18"/>
+                            <circle cx="9" cy="6" r="2"/>
+                            <circle cx="15" cy="12" r="2"/>
+                            <circle cx="10" cy="18" r="2"/>
+
+                        </svg>
+                    </span>
+
+                    <span class="inventario-menu-texto">
+                        Opciones de inventario
+                    </span>
+
+                </span>
+
+                            <span class="inventario-flecha"></span>
+
+                        </summary>
+
+                        <div class="inventario-menu-lista">
+
+                            <!-- ALERTAS -->
+                            <a th:href="@{/inventario/alertas}">
+
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                                    <path d="M10 21h4"/>
+                                </svg>
+
+                                Alertas de stock
+                            </a>
+
+                            <!-- MOVIMIENTOS -->
+                            <a th:href="@{/inventario/movimientos}">
+
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 12a9 9 0 1 0 2.64-6.36L3 8"/>
+                                    <path d="M3 3v5h5"/>
+                                    <path d="M12 7v5l3 2"/>
+                                </svg>
+
+                                Ver movimientos
+                            </a>
+
+                            <!-- REGISTRAR MOVIMIENTO -->
+                            <a th:href="@{/inventario/movimientos/nuevo}">
+
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l3-1.71"/>
+                                    <path d="m3.3 7 8.7 5 8.7-5"/>
+                                    <path d="M12 22V12"/>
+                                    <path d="M16 19h6"/>
+                                    <path d="M19 16v6"/>
+                                </svg>
+
+                                Registrar movimiento
+                            </a>
+
+
+                            <!-- CONTEO FISICO -->
+                            <a th:href="@{/inventario/conteos}">
+
+                                <svg viewBox="0 0 24 24">
+                                    <rect x="4" y="3" width="16" height="18" rx="2"/>
+                                    <path d="M9 3.5h6"/>
+                                    <path d="M8 10l2 2 4-4"/>
+                                    <path d="M8 16h8"/>
+                                </svg>
+
+                                Conteo físico
+
+                            </a>
+
+                            <div class="inventario-menu-separador"></div>
+
+                            <!-- VALORACION -->
+                            <a th:href="@{/inventario/valoracion}">
+
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 3v18h18"/>
+                                    <rect x="6" y="12" width="3" height="6" rx="1"/>
+                                    <rect x="11" y="8" width="3" height="10" rx="1"/>
+                                    <rect x="16" y="4" width="3" height="14" rx="1"/>
+                                </svg>
+
+                                Valoración de inventario
+                            </a>
+
+                            <!-- REPORTE -->
+                            <a th:href="@{/inventario/reporte}">
+
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <path d="M14 2v6h6"/>
+                                    <path d="M8 17v-3"/>
+                                    <path d="M12 17v-5"/>
+                                    <path d="M16 17v-2"/>
+                                </svg>
+
+                                Reporte general
+                            </a>
+
+                            <a th:href="@{/inventario/auditoria}">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M4 4h16v16H4z"/>
+                                    <path d="M8 9h8M8 13h8M8 17h5"/>
+                                </svg>
+                                Auditoría de inventario
+                            </a>
+
+
+                        </div>
+
+                    </details>
+
+                    <!-- BOTON NUEVO PRODUCTO -->
                     <a th:href="@{/inventario/nuevo}"
-                       class="btn-primario">
+                       class="btn-primario inventario-boton-nuevo">
+
                         + Nuevo producto
+
                     </a>
 
                 </div>
@@ -124,12 +247,10 @@
                  th:text="${mensaje}">
             </div>
 
-
             <div class="alerta-error"
                  th:if="${error}"
                  th:text="${error}">
             </div>
-
 
             <!-- BUSQUEDA Y FILTROS -->
             <form class="filtros-inventario"
@@ -213,7 +334,7 @@
                 </span>
             </div>
 
-            <!-- TABLA -->
+            <!-- TABLA DE PRODUCTOS -->
             <div class="tabla-contenedor">
 
                 <div class="estado-vacio"
@@ -284,7 +405,6 @@
                         <td>
                             <div class="acciones-producto">
 
-
                                 <a class="enlace-editar"
                                    th:href="@{/inventario/movimientos/nuevo(productoId=${producto.id})}">
                                     Movimiento
@@ -325,6 +445,175 @@
 <footer class="app-footer">
     Esencia &amp; Aroma © 2026
 </footer>
+
+
+<!-- NOTIFICACION EMERGENTE DE STOCK BAJO -->
+
+<div id="notificacionStock"
+     role="alert"
+     aria-live="assertive"
+     style="
+         display:none;
+         position:fixed;
+         top:24px;
+         right:24px;
+         z-index:9999;
+         width:min(370px, calc(100vw - 48px));
+         background:#ffffff;
+         border:1px solid #f1c4d6;
+         border-left:5px solid #c13b77;
+         border-radius:14px;
+         padding:20px;
+         box-shadow:0 8px 28px rgba(0,0,0,0.16);
+         font-family:Arial,sans-serif;
+     ">
+
+    <button type="button"
+            onclick="cerrarNotificacionStock()"
+            aria-label="Cerrar notificación"
+            style="
+                position:absolute;
+                top:12px;
+                right:14px;
+                background:transparent;
+                border:none;
+                cursor:pointer;
+                font-size:22px;
+                color:#777;
+            ">
+        &times;
+    </button>
+
+    <h3 style="
+        color:#b83271;
+        margin:0 25px 12px 0;
+        font-size:17px;
+    ">
+        &#9888; ¡Alerta! Tu stock está bajo
+    </h3>
+
+    <p id="mensajeNotificacionStock"
+       style="
+           color:#444;
+           line-height:1.6;
+           margin:0 0 15px;
+           font-size:14px;
+       ">
+    </p>
+
+    <a th:href="@{/inventario/alertas}"
+       style="
+           color:#b83271;
+           font-weight:bold;
+           text-decoration:none;
+           font-size:13px;
+       ">
+        Ver historial de alertas
+    </a>
+
+</div>
+
+<script th:inline="javascript">
+
+    // Dirección de consulta de alertas
+    const urlUltimaAlerta =
+        /*[[@{/inventario/alertas/ultima}]]*/
+        '/inventario/alertas/ultima';
+
+    let temporizadorStock;
+
+    // Cerrar la notificación
+    function cerrarNotificacionStock() {
+
+        document.getElementById(
+            "notificacionStock"
+        ).style.display = "none";
+    }
+
+    // Mostrar el mensaje en la página
+    function mostrarNotificacionStock(alerta) {
+
+        const mensaje = document.getElementById(
+            "mensajeNotificacionStock"
+        );
+
+        mensaje.textContent =
+            "El producto " + alerta.producto +
+            " tiene solamente " + alerta.stock +
+            " unidades disponibles. " +
+            "Su stock mínimo es de " + alerta.minimo +
+            " unidades. Te recomendamos evaluar " +
+            "su reposición en la próxima campaña " +
+            "para mantener el abastecimiento.";
+
+        const ventana = document.getElementById(
+            "notificacionStock"
+        );
+
+        ventana.style.display = "block";
+
+        // Reiniciar el tiempo de visualización
+        clearTimeout(temporizadorStock);
+
+        // Desaparecer después de 8 segundos
+        temporizadorStock = setTimeout(
+            cerrarNotificacionStock,
+            8000
+        );
+    }
+
+    // Consultar si existe una alerta nueva
+    async function comprobarAlertasStock() {
+
+        try {
+
+            const respuesta = await fetch(
+                urlUltimaAlerta,
+                { cache: "no-store" }
+            );
+
+            // No hay alertas recientes
+            if (respuesta.status === 204) {
+                return;
+            }
+
+            if (!respuesta.ok) {
+                return;
+            }
+
+            const alerta = await respuesta.json();
+
+            // Evitar mostrar la misma alerta
+            // repetidamente en este navegador
+            const ultimaVista = sessionStorage.getItem(
+                "esenciaUltimaAlertaStock"
+            );
+
+            if (ultimaVista === String(alerta.id)) {
+                return;
+            }
+
+            mostrarNotificacionStock(alerta);
+
+            sessionStorage.setItem(
+                "esenciaUltimaAlertaStock",
+                String(alerta.id)
+            );
+
+        } catch (error) {
+
+            // Si falla la consulta, Inventario
+            // continuará funcionando normalmente.
+        }
+    }
+
+    // Primera consulta al abrir Inventario
+    comprobarAlertasStock();
+
+    // Consultar nuevas alertas cada 5 segundos
+    setInterval(comprobarAlertasStock, 5000);
+
+</script>
 
 </body>
 </html>

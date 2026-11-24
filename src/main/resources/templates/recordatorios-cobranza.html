@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esencia & Aroma | Recordatorios de pago</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+
+<body class="app-body">
+
+<header class="encabezado">
+    <div class="logo">Esencia <span>&amp; Aroma</span></div>
+    <div class="accesos">Administración</div>
+</header>
+
+<div class="panel-principal">
+
+    <aside class="menu-lateral">
+        <p class="menu-titulo">MENÚ PRINCIPAL</p>
+
+        <nav class="menu-enlaces">
+            <a th:href="@{/panel}">Inicio</a>
+            <a th:href="@{/inventario}">Inventario</a>
+            <a th:href="@{/abastecimiento}">Abastecimiento</a>
+            <a th:href="@{/ventas}">Clientes y Ventas</a>
+            <a th:href="@{/cobranzas}" class="activo">
+                Cobranzas y Reportes
+            </a>
+        </nav>
+
+        <div class="menu-inferior">
+            <form th:action="@{/logout}" method="post"
+                  class="form-cerrar-sesion">
+                <button type="submit" class="btn-cerrar-sesion">
+                    Cerrar sesión
+                </button>
+            </form>
+            <p>Esencia &amp; Aroma</p>
+            <span>Sistema de gestión comercial</span>
+        </div>
+    </aside>
+
+    <main class="contenido">
+
+        <section class="bienvenida">
+            <a th:href="@{/cobranzas}" class="volver-panel">
+                ← Volver a Cobranzas
+            </a>
+
+            <h1>Recordatorios de pago</h1>
+
+            <p>
+                Programa vencimientos y consulta las deudas
+                próximas a vencer o vencidas.
+            </p>
+        </section>
+
+        <section class="seccion-modulos">
+
+            <div class="alerta-exito"
+                 th:if="${mensaje}"
+                 th:text="${mensaje}">
+            </div>
+
+            <div class="ea-resumen">
+
+                <div class="ea-tarjeta">
+                    <span>Deudas vencidas</span>
+                    <strong th:text="${resumen.vencidos}">0</strong>
+                </div>
+
+                <div class="ea-tarjeta">
+                    <span>Vencen hoy</span>
+                    <strong th:text="${resumen.vencenHoy}">0</strong>
+                </div>
+
+                <div class="ea-tarjeta">
+                    <span>Próximos vencimientos</span>
+                    <strong th:text="${resumen.proximos}">0</strong>
+                </div>
+
+                <div class="ea-tarjeta">
+                    <span>Total de recordatorios</span>
+                    <strong th:text="${resumen.total}">0</strong>
+                </div>
+
+            </div>
+
+            <div class="ea-bloque">
+
+                <h2>Programar vencimiento</h2>
+
+                <form th:action="@{/cobranzas/recordatorios/guardar}"
+                      th:object="${formulario}"
+                      method="post">
+
+                    <div class="alerta-error"
+                         th:if="${#fields.hasAnyErrors()}">
+
+                        <p th:each="e : ${#fields.allErrors()}"
+                           th:text="${e}">
+                        </p>
+
+                    </div>
+
+                    <div class="ea-campos">
+
+                        <div class="ea-campo">
+                            <label for="ventaId">Venta al crédito *</label>
+
+                            <select id="ventaId"
+                                    th:field="*{ventaId}"
+                                    required>
+
+                                <option value="">
+                                    Seleccionar venta
+                                </option>
+
+                                <option th:each="v : ${ventasPendientes}"
+                                        th:value="${v.id}"
+                                        th:text="|Venta #${v.id} - ${v.cliente.nombre} - Saldo S/ ${v.saldo}|">
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="ea-campo">
+                            <label for="fechaVencimiento">
+                                Fecha de vencimiento *
+                            </label>
+
+                            <input type="date"
+                                   id="fechaVencimiento"
+                                   th:field="*{fechaVencimiento}"
+                                   required>
+                        </div>
+
+                        <div class="ea-campo">
+                            <label for="observacion">Observación</label>
+
+                            <input type="text"
+                                   id="observacion"
+                                   th:field="*{observacion}"
+                                   maxlength="250"
+                                   placeholder="Ej. Pago acordado con el cliente">
+                        </div>
+
+                    </div>
+
+                    <div class="ea-acciones">
+                        <button type="submit" class="btn-primario">
+                            Guardar vencimiento
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="ea-bloque">
+
+                <h2>Seguimiento de vencimientos</h2>
+
+                <div class="estado-vacio"
+                     th:if="${#lists.isEmpty(alertas)}">
+                    No hay vencimientos registrados.
+                </div>
+
+                <div class="tabla-contenedor"
+                     th:unless="${#lists.isEmpty(alertas)}">
+
+                    <table class="tabla-productos">
+
+                        <thead>
+                        <tr>
+                            <th>Venta</th>
+                            <th>Cliente</th>
+                            <th>Vencimiento</th>
+                            <th>Saldo pendiente</th>
+                            <th>Estado</th>
+                            <th>Observación</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="a : ${alertas}">
+
+                            <td th:text="${a.ventaId}"></td>
+
+                            <td th:text="${a.cliente}"></td>
+
+                            <td th:text="${#temporals.format(
+                                a.fechaVencimiento,
+                                'dd/MM/yyyy')}">
+                            </td>
+
+                            <td th:text="|S/ ${a.saldo}|"></td>
+
+                            <td>
+                                <span class="estado-stock"
+                                      th:classappend="${a.estado == 'VENCIDO'} ? ' stock-bajo' : ''"
+                                      th:text="${a.estado}">
+                                </span>
+                            </td>
+
+                            <td th:text="${a.observacion}"></td>
+
+                            <td>
+                                <a class="enlace-editar"
+                                   th:href="@{/cobranzas/abonar/{id}(id=${a.ventaId})}">
+                                    Registrar abono
+                                </a>
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<footer class="app-footer">
+    Esencia &amp; Aroma © 2026
+</footer>
+
+</body>
+</html>
